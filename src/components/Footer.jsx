@@ -3,12 +3,22 @@ function Footer({ language }) {
     ar: {
       rights: '© 2026 Ram-Savi. جميع الحقوق محفوظة.',
       palestine: 'صنع في فلسطين 🇵🇸',
-      followUs: 'تابعنا على'
+      followUs: 'تابعنا على',
+      contactTitle: 'معلومات التواصل',
+      emailLabel: 'البريد الإلكتروني',
+      phoneLabel: 'الهاتف',
+      email: 'savivoucher@gmail.com',
+      phone: '+970569432423'
     },
     en: {
       rights: '© 2026 Ram-Savi. All rights reserved.',
       palestine: 'Made in Palestine 🇵🇸',
-      followUs: 'Follow Us'
+      followUs: 'Follow Us',
+      contactTitle: 'Contact',
+      emailLabel: 'Email',
+      phoneLabel: 'Phone',
+      email: 'savivoucher@gmail.com',
+      phone: '+970569432423'
     }
   }
 
@@ -51,6 +61,17 @@ function Footer({ language }) {
                 </svg>
               </a>
             </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="mt-4 text-center">
+            <p className="text-white font-semibold">{t.contactTitle}</p>
+            <p className="text-gray-400 text-sm">
+              {t.emailLabel}: <a href={`mailto:${t.email}`} className="text-primary hover:underline">{t.email}</a>
+            </p>
+            <p className="text-gray-400 text-sm">
+              {t.phoneLabel}: <a href={`tel:${t.phone}`} className="text-primary hover:underline">{t.phone}</a>
+            </p>
           </div>
           
           <p className="text-gray-400 text-center">{t.rights}</p>
