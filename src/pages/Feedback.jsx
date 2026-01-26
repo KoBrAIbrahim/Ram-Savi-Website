@@ -103,7 +103,7 @@ function Feedback({ language }) {
         message: formData.message
       });
 
-      const response = await fetch(`${API_BASE}/complaints`, {
+      const response = await fetch(`/complaints`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

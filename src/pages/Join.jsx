@@ -192,7 +192,7 @@ function Join({ language }) {
     // نرسل قيمة الـ select مباشرة كـ companyType لأننا نستخدم قيم enum صحيحة
 
     try {
-      const response = await fetch(`${API_BASE}/request-join-savi`, {
+      const response = await fetch(`/request-join-savi`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -234,7 +234,7 @@ function Join({ language }) {
     // نرسل قيمة الخدمة مباشرة كـ serviceType باستخدام القيم المطلوبة: WEBSITE, APPLICATION, APPANDWEBSITE
 
     try {
-      const response = await fetch(`${API_BASE}/request-service`, {
+      const response = await fetch(`/request-service`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
