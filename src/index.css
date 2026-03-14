@@ -1,18 +1,302 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ── CSS Variables ─────────────────────────────── */
+:root {
+    --primary:        #E80010;
+    --primary-light:  #FF3545;
+    --primary-dark:   #A3000B;
+    --primary-glow:   rgba(232, 0, 16, 0.45);
+    --dark:           #07080F;
+    --dark-2:         #0F1018;
+    --dark-3:         #161722;
+    --dark-4:         #1E1F2E;
+    --surface-glass:  rgba(255, 255, 255, 0.055);
+    --surface-border: rgba(255, 255, 255, 0.10);
 }
 
+/* ── Reset ─────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  font-family: 'Cairo', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: 'Cairo', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #ffffff;
+    color: #0D0D0D;
 }
 
+/* ── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f0f0f0; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+/* ── Gradient Text ──────────────────────────────── */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 55%, var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── Glassmorphism ──────────────────────────────── */
+.glass {
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--surface-border);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 20px;
+}
+
+/* ── Glow ───────────────────────────────────────── */
+.glow-red { box-shadow: 0 0 30px var(--primary-glow), 0 0 70px rgba(232,0,16,0.15); }
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 35px var(--primary-glow), 0 4px 16px rgba(0,0,0,0.25);
+}
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.btn-primary:hover::after { opacity: 1; }
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(16px);
+    color: rgba(255,255,255,0.9);
+    font-weight: 700;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: all 0.25s ease;
+}
+.btn-ghost:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.22);
+}
+
+/* ── Blobs ──────────────────────────────────────── */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    will-change: transform;
+}
+.blob-red {
+    background: radial-gradient(circle, rgba(232,0,16,0.55) 0%, rgba(180,0,12,0.22) 55%, transparent 80%);
+}
+.blob-red-soft {
+    background: radial-gradient(circle, rgba(232,0,16,0.28) 0%, transparent 70%);
+}
+
+/* ── Grid / Noise ───────────────────────────────── */
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+}
+
+/* ── Badges ─────────────────────────────────────── */
+.badge-red {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.9rem;
+    background: rgba(232,0,16,0.1);
+    border: 1px solid rgba(232,0,16,0.22);
+    border-radius: 100px;
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.badge-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.9rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* ── Feature Cards ──────────────────────────────── */
+.feature-card {
+    background: #ffffff;
+    border-radius: 22px;
+    border: 1.5px solid #f0f0f4;
+    transition: all 0.38s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--primary-light));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.38s ease;
+}
+.feature-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.09), 0 4px 20px rgba(232,0,16,0.07);
+    border-color: rgba(232,0,16,0.14);
+}
+.feature-card:hover::before { transform: scaleX(1); }
+
+/* ── Input ──────────────────────────────────────── */
+.input-field {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    background: #f7f7fa;
+    border: 1.5px solid #e5e5ee;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    color: #0d0d0d;
+    transition: all 0.22s ease;
+    outline: none;
+}
+.input-field:focus {
+    background: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(232,0,16,0.10);
+}
+
+/* ── Scroll Reveal ──────────────────────────────── */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.72s ease, transform 0.72s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition: opacity 0.72s ease, transform 0.72s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(28px);
+    transition: opacity 0.72s ease, transform 0.72s ease;
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.93);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+.delay-100 { transition-delay: 0.10s; }
+.delay-150 { transition-delay: 0.15s; }
+.delay-200 { transition-delay: 0.20s; }
+.delay-250 { transition-delay: 0.25s; }
+.delay-300 { transition-delay: 0.30s; }
+.delay-400 { transition-delay: 0.40s; }
+.delay-500 { transition-delay: 0.50s; }
+.delay-600 { transition-delay: 0.60s; }
+.delay-700 { transition-delay: 0.70s; }
+
+/* ── Keyframes ──────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0; }                               to { opacity: 1; } }
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(22px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeLeft{ from { opacity: 0; transform: translateX(22px); }  to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.90); }       to { opacity: 1; transform: scale(1); } }
+
+@keyframes floatSlow {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    40%     { transform: translateY(-10px) rotate(1deg); }
+    70%     { transform: translateY(-5px) rotate(-0.5deg); }
+}
+@keyframes floatBlob {
+    0%,100% { transform: translate(0, 0) scale(1); }
+    33%     { transform: translate(28px, -18px) scale(1.06); }
+    66%     { transform: translate(-18px, 10px) scale(0.95); }
+}
+@keyframes pulseGlow {
+    0%,100% { box-shadow: 0 0 20px var(--primary-glow); }
+    50%     { box-shadow: 0 0 48px var(--primary-glow), 0 0 90px rgba(232,0,16,0.18); }
+}
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+}
+@keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+/* ── Animation Classes ──────────────────────────── */
+.animate-fade-in      { animation: fadeIn   0.7s ease both; }
+.animate-fade-up      { animation: fadeUp   0.7s ease both; }
+.animate-fade-left    { animation: fadeLeft 0.7s ease both; }
+.animate-scale-in     { animation: scaleIn  0.65s ease both; }
+.animate-float-slow   { animation: floatSlow 7s ease-in-out infinite; }
+.animate-float-blob   { animation: floatBlob 9s ease-in-out infinite; }
+.animate-pulse-glow   { animation: pulseGlow 2.8s ease-in-out infinite; }
+.animate-rotate-slow  { animation: rotateSlow 22s linear infinite; }
+
+.anim-delay-100 { animation-delay: 0.10s; }
+.anim-delay-200 { animation-delay: 0.20s; }
+.anim-delay-300 { animation-delay: 0.30s; }
+.anim-delay-400 { animation-delay: 0.40s; }
+.anim-delay-500 { animation-delay: 0.50s; }
+.anim-delay-600 { animation-delay: 0.60s; }
+.anim-delay-700 { animation-delay: 0.70s; }
+.anim-delay-800 { animation-delay: 0.80s; }
+
+/* ── Reduced Motion ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-in, .animate-fade-up, .animate-fade-left,
+    .animate-scale-in, .animate-float-slow, .animate-float-blob,
+    .animate-pulse-glow, .animate-rotate-slow { animation: none !important; }
+    .reveal, .reveal-left, .reveal-right, .reveal-scale {
+        opacity: 1 !important; transform: none !important;
+    }
+}

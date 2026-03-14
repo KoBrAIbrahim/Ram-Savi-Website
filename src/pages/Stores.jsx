@@ -1,202 +1,195 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { getPageTranslations } from '../locales'
+import { useScrollReveal } from '../hooks/useScrollReveal'
 
 function Stores({ language }) {
-  const [stores, setStores] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+    const [stores,      setStores]      = useState([])
+    const [loading,     setLoading]     = useState(true)
+    const [error,       setError]       = useState(null)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages,  setTotalPages]  = useState(1)
+    const t = getPageTranslations(language, 'stores')
+    useScrollReveal()
 
-  const content = {
-    ar: {
-      title: 'المحلات المشتركة',
-      loading: 'جاري التحميل...',
-      error: 'حدث خطأ في تحميل المحلات',
-      noStores: 'لا توجد محلات متاحة حالياً',
-      previousPage: 'السابق',
-      nextPage: 'التالي',
-      backToApp: 'العودة إلى التطبيق'
-    },
-    en: {
-      title: 'Partner Stores',
-      loading: 'Loading...',
-      error: 'Error loading stores',
-      noStores: 'No stores available',
-      previousPage: 'Previous',
-      nextPage: 'Next',
-      backToApp: 'Back to App'
+    useEffect(() => { fetchStores() }, [currentPage])
+
+    const fetchStores = async () => {
+        try {
+            setLoading(true)
+            const apiUrl = import.meta.env.VITE_API_COMPANIES_URL
+            const res    = await fetch(`${apiUrl}?page=${currentPage}&limit=10`)
+            if (!res.ok) throw new Error('Failed to fetch stores')
+            const data   = await res.json()
+            const comps  = data.data || []
+            setStores(Array.isArray(comps) ? comps : [])
+            if (data.pagination) {
+                setTotalPages(data.pagination.totalPages || data.pagination.total_pages || 1)
+            } else {
+                setTotalPages(1)
+            }
+            setError(null)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
     }
-  }
 
-  const t = content[language]
-
-  useEffect(() => {
-    console.log('Current Page changed to:', currentPage)
-    fetchStores()
-  }, [currentPage])
-
-  const fetchStores = async () => {
-    try {
-      setLoading(true)
-      const apiUrl = import.meta.env.VITE_API_COMPANIES_URL
-      console.log('API URL:', apiUrl)
-      const response = await fetch(`${apiUrl}?page=${currentPage}&limit=10`)
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch stores')
-      }
-      
-      const data = await response.json()
-      console.log('API Response:', data)
-      console.log('Pagination:', data.pagination)
-      
-      // Get companies from data.data
-      const companies = data.data || []
-      setStores(Array.isArray(companies) ? companies : [])
-      
-      // Get pagination info
-      if (data.pagination) {
-        const totalPages = data.pagination.totalPages || data.pagination.total_pages || 1
-        const totalCount = data.pagination.total || data.pagination.totalCount || 0
-        console.log('Total Count:', totalCount)
-        console.log('Total Pages:', totalPages)
-        setTotalPages(totalPages)
-      } else {
-        setTotalPages(1)
-      }
-      setError(null)
-    } catch (err) {
-      setError(err.message)
-      console.error('Error fetching stores:', err)
-    } finally {
-      setLoading(false)
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-2 border-[#E80010] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-gray-500">{t.loading}</p>
+                </div>
+            </div>
+        )
     }
-  }
 
-  if (loading) {
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center max-w-sm p-8 bg-white rounded-2xl shadow-card border border-gray-100">
+                    <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-6 h-6 text-[#E80010]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <p className="text-gray-700 font-semibold mb-4">{t.error}</p>
+                    <Link to="/savi-app" className="btn-primary mx-auto inline-flex text-sm">{t.backToApp}</Link>
+                </div>
+            </div>
+        )
+    }
+
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mb-4"></div>
-          <p className="text-xl text-gray-600">{t.loading}</p>
-        </div>
-      </div>
-    )
-  }
+        <div className="min-h-screen bg-white overflow-x-hidden">
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-xl text-red-600 mb-4">{t.error}</p>
-          <Link
-            to="/savi-app"
-            className="text-red-600 hover:text-red-700 underline"
-          >
-            {t.backToApp}
-          </Link>
-        </div>
-      </div>
-    )
-  }
+            {/* ── HERO ── */}
+            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+                <div className="blob blob-red w-[500px] h-[500px] -top-24 -right-20 opacity-50 animate-float-blob" />
+                <div className="grid-overlay" />
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
+                    <div className="badge-white mx-auto mb-6 w-fit">
+                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block animate-pulse" />
+                        {language === 'ar' ? 'شركاؤنا' : 'Our Partners'}
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-black text-white mb-6">{t.title}</h1>
+                    <Link to="/savi-app" className="btn-ghost text-sm mx-auto inline-flex">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        {t.backToApp}
+                    </Link>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+            </section>
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">{t.title}</h1>
-          <Link
-            to="/savi-app"
-            className="inline-block text-red-600 hover:text-red-700 transition-colors"
-          >
-            ← {t.backToApp}
-          </Link>
-        </div>
+            {/* ── GRID ── */}
+            <section className="py-20 pb-28">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Stores Grid */}
-        {stores.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-gray-600">{t.noStores}</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {stores.map((store) => (
-                <div
-                  key={store.id}
-                  className="flex flex-col items-center"
-                >
-                  <div className="w-32 h-32 rounded-full overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 mb-3">
-                    <img
-                      src={store.logoUrl || '/app_icon.png'}
-                      alt={store.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        e.target.src = '/app_icon.png'
-                      }}
-                    />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-semibold text-gray-800 text-sm line-clamp-2">
-                      {store.name}
-                    </h3>
-                    {store.address && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {store.address}
-                      </p>
-                    )}
-                    {store.averageRating > 0 && (
-                      <div className="flex items-center justify-center mt-2">
-                        <span className="text-yellow-500">★</span>
-                        <span className="text-sm text-gray-600 mr-1">
+                    {/* Page indicator */}
+                    <div className="flex items-center justify-between mb-10 reveal">
+                        <div className="badge-red">
+                            {language === 'ar' ? `الصفحة ${currentPage} من ${totalPages}` : `Page ${currentPage} of ${totalPages}`}
+                        </div>
+                        <p className="text-gray-400 text-sm">{currentPage} / {totalPages}</p>
+                    </div>
+
+                    {stores.length === 0 ? (
+                        <div className="text-center py-20 text-gray-400">{t.noStores}</div>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                                {stores.map((store, i) => (
+                                    <div key={store.id}
+                                         className={`group flex flex-col items-center bg-white rounded-2xl p-5 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all duration-300 reveal delay-${(i % 5) * 100 + 100}`}>
+                                        <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/30 transition-all mb-3">
+                                            <img
+                                                src={store.logoUrl || '/app_icon.png'}
+                                                alt={store.name}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350"
+                                                onError={(e) => { e.target.src = '/app_icon.png' }}
+                                            />
+                                        </div>
+                                        <h3 className="font-bold text-[#07080F] text-xs text-center line-clamp-2">{store.name}</h3>
+                                        {store.address && (
+                                            <p className="text-gray-400 text-[0.68rem] mt-1 text-center line-clamp-1">{store.address}</p>
+                                        )}
+                                        {store.averageRating > 0 && (
+                                            <div className="flex items-center gap-0.5 mt-2">
+                                                <span className="text-yellow-400 text-xs">★</span>
+                                                <span className="text-gray-500 text-[0.72rem] font-medium">
                           {store.formattedRating || store.averageRating.toFixed(1)}
                         </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-12">
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                    currentPage === 1
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-red-600 text-white hover:bg-red-700'
-                  }`}
-                >
-                  {t.previousPage}
-                </button>
-                
-                <span className="text-gray-600 font-semibold">
-                  {currentPage} / {totalPages}
-                </span>
-                
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                    currentPage === totalPages
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-red-600 text-white hover:bg-red-700'
-                  }`}
-                >
-                  {t.nextPage}
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="flex items-center justify-center gap-4 mt-14 reveal">
+                                    <button
+                                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                                            currentPage === 1
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                : 'bg-white border border-gray-200 text-[#07080F] hover:border-[#E80010]/30 hover:text-[#E80010]'
+                                        }`}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                        </svg>
+                                        {t.previousPage}
+                                    </button>
+
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                                            const page = i + 1
+                                            return (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => setCurrentPage(page)}
+                                                    className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
+                                                        currentPage === page
+                                                            ? 'bg-[#E80010] text-white shadow-glow-sm'
+                                                            : 'text-gray-500 hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
+                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                                            currentPage === totalPages
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                : 'bg-[#E80010] text-white btn-primary'
+                                        }`}
+                                    >
+                                        {t.nextPage}
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </section>
+
+        </div>
+    )
 }
 
 export default Stores

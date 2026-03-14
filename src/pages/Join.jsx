@@ -1,674 +1,320 @@
-import { useState } from 'react'
-import { API_BASE } from '../config'
+import {useState} from 'react'
+import {getPageTranslations} from '../locales'
+import {useScrollReveal} from '../hooks/useScrollReveal'
 
-function Join({ language }) {
-  const [joinType, setJoinType] = useState('savi') // 'savi' or 'development'
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    businessType: 'FOODANDDRINK',
-    businessName: '',
-    city: '',
-    message: ''
-  })
+function Join({language}) {
+    const [joinType, setJoinType] = useState('savi')
+    const [submitted, setSubmitted] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
 
-  const [devFormData, setDevFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    companyName: '',
-    serviceType: 'WEBSITE',
-    projectDetails: ''
-  })
+    const [formData, setFormData] = useState({
+        name: '', email: '', phone: '', businessType: 'FOODANDDRINK',
+        businessName: '', city: '', message: '',
+    })
+    const [devFormData, setDevFormData] = useState({
+        name: '', email: '', phone: '', companyName: '', serviceType: 'WEBSITE', projectDetails: '',
+    })
 
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+    const t = getPageTranslations(language, 'join')
+    useScrollReveal()
 
-  const content = {
-    ar: {
-      // Tab headers
-      saviTab: 'الانضمام لتطبيق Savi',
-      developmentTab: 'طلب تطوير تطبيق أو موقع',
-      
-      // Savi form
-      title: 'انضم إلى تطبيق Savi',
-      subtitle: 'كن جزءاً من شبكة العروض الحصرية',
-      intro: 'انضم إلى تطبيق Savi وابدأ في الاستفادة من العروض الحصرية. سواء كنت تملك مطعماً، متجراً، أو أي نشاط تجاري آخر، نحن هنا لمساعدتك.',
-      formTitle: 'سجل الآن',
-      nameLabel: 'الاسم الكامل',
-      namePlaceholder: 'أدخل اسمك الكامل',
-      emailLabel: 'البريد الإلكتروني',
-      emailPlaceholder: 'example@email.com',
-      phoneLabel: 'رقم الهاتف',
-      phonePlaceholder: '+970569432423',
-      businessTypeLabel: 'نوع النشاط التجاري',
-      restaurant: 'مطعم',
-      cafe: 'مقهى',
-      store: 'متجر',
-      supermarket: 'سوبرماركت',
-      other: 'أخرى',
-      foodAndDrink: 'طعام ومشروبات',
-      fashion: 'أزياء',
-      furniture: 'أثاث',
-      beautyAndHealth: 'الجمال والصحة',
-      fun: 'ترفيه',
-      businessNameLabel: 'اسم النشاط التجاري',
-      businessNamePlaceholder: 'اسم مطعمك أو محلك',
-      cityLabel: 'المدينة',
-      cityPlaceholder: 'رام الله، نابلس، الخليل...',
-      messageLabel: 'رسالة إضافية (اختياري)',
-      messagePlaceholder: 'أخبرنا المزيد عن نشاطك التجاري...',
-      submit: 'إرسال الطلب',
-      submitting: 'جاري الإرسال...',
-      successTitle: 'تم استلام طلبك!',
-      successMessage: 'شكراً لانضمامك إلى Savi. سيتواصل معك فريقنا قريباً لإكمال عملية التسجيل وبدء رحلتك معنا.',
-      errorTitle: 'حدث خطأ!',
-      errorMessage: 'عذراً، حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.',
-      backHome: 'العودة للرئيسية',
-      whyJoin: 'لماذا تنضم إلينا؟',
-      benefit1: 'انضمام مجاني 100%',
-      benefit1Text: 'لا توجد رسوم اشتراك للمتاجر نهائياً',
-      benefit2: 'زيادة المبيعات',
-      benefit2Text: 'جذب عملاء جدد وزيادة الإيرادات',
-      benefit3: 'سهولة الاستخدام',
-      benefit3Text: 'نظام بسيط وسهل الإدارة',
-      benefit4: 'دعم مستمر',
-      benefit4Text: 'فريق دعم متواجد لمساعدتك دائماً',
-      
-      // Development form
-      devTitle: 'طلب تطوير تطبيق أو موقع',
-      devSubtitle: 'نحول أفكارك إلى واقع رقمي',
-      devIntro: 'هل تحتاج لتطبيق جوال أو موقع إلكتروني احترافي؟ فريقنا من المطورين جاهز لتحويل فكرتك إلى منتج رقمي متكامل.',
-      devFormTitle: 'أخبرنا عن مشروعك',
-      companyNameLabel: 'اسم الشركة',
-      companyNamePlaceholder: 'اسم شركتك أو نشاطك التجاري',
-      serviceTypeLabel: 'نوع الخدمة المطلوبة',
-      website: 'موقع إلكتروني',
-      application: 'تطبيق جوال (iOS & Android)',
-      appAndWebsite: 'تطبيق وموقع',
-      projectDetailsLabel: 'تفاصيل المشروع',
-      projectDetailsPlaceholder: 'اشرح لنا فكرتك، المميزات المطلوبة، والهدف من التطبيق/الموقع...',
-      devSubmit: 'إرسال الطلب',
-      devSuccessTitle: 'تم استلام طلبك!',
-      devSuccessMessage: 'شكراً لثقتك بنا. سيتواصل معك فريق التطوير قريباً لمناقشة تفاصيل مشروعك وتقديم عرض سعر مناسب.',
-      whyChooseUs: 'لماذا تختارنا؟',
-      devBenefit1: 'خبرة محلية',
-      devBenefit1Text: 'فهم عميق للسوق الفلسطيني',
-      devBenefit2: 'تقنيات حديثة',
-      devBenefit2Text: 'نستخدم أحدث التقنيات والأدوات',
-      devBenefit3: 'أسعار منافسة',
-      devBenefit3Text: 'جودة عالية بأسعار معقولة',
-      devBenefit4: 'دعم شامل',
-      devBenefit4Text: 'دعم فني ومتابعة بعد التسليم'
-    },
-    en: {
-      // Tab headers
-      saviTab: 'Join Savi App',
-      developmentTab: 'Request App/Website Development',
-      
-      // Savi form
-      title: 'Join Savi App',
-      subtitle: 'Be Part of Exclusive Offers Network',
-      intro: 'Join Savi app and start benefiting from exclusive offers. Whether you own a restaurant, store, or any other business, we\'re here to help.',
-      formTitle: 'Register Now',
-      nameLabel: 'Full Name',
-      namePlaceholder: 'Enter your full name',
-      emailLabel: 'Email',
-      emailPlaceholder: 'example@email.com',
-      phoneLabel: 'Phone Number',
-      phonePlaceholder: '+970569432423',
-      businessTypeLabel: 'Business Type',
-      restaurant: 'Restaurant',
-      cafe: 'Cafe',
-      store: 'Store',
-      supermarket: 'Supermarket',
-      other: 'Other',
-      foodAndDrink: 'Food & Drink',
-      fashion: 'Fashion',
-      furniture: 'Furniture',
-      beautyAndHealth: 'Beauty & Health',
-      fun: 'Entertainment',
-      businessNameLabel: 'Business Name',
-      businessNamePlaceholder: 'Your restaurant or store name',
-      cityLabel: 'City',
-      cityPlaceholder: 'Ramallah, Nablus, Hebron...',
-      messageLabel: 'Additional Message (Optional)',
-      messagePlaceholder: 'Tell us more about your business...',
-      submit: 'Submit Request',
-      submitting: 'Submitting...',
-      successTitle: 'Request Received!',
-      successMessage: 'Thank you for joining Savi. Our team will contact you soon to complete the registration process and start your journey with us.',
-      errorTitle: 'Error Occurred!',
-      errorMessage: 'Sorry, an error occurred while submitting your request. Please try again.',
-      backHome: 'Back to Home',
-      whyJoin: 'Why Join Us?',
-      benefit1: '100% Free Joining',
-      benefit1Text: 'Absolutely no subscription fees for stores',
-      benefit2: 'Increase Sales',
-      benefit2Text: 'Attract new customers and boost revenue',
-      benefit3: 'Easy to Use',
-      benefit3Text: 'Simple and easy management system',
-      benefit4: 'Continuous Support',
-      benefit4Text: 'Support team always ready to help',
-      
-      // Development form
-      devTitle: 'Request App or Website Development',
-      devSubtitle: 'We Turn Your Ideas Into Digital Reality',
-      devIntro: 'Need a professional mobile app or website? Our development team is ready to transform your idea into a complete digital product.',
-      devFormTitle: 'Tell Us About Your Project',
-      companyNameLabel: 'Company Name',
-      companyNamePlaceholder: 'Your company or business name',
-      serviceTypeLabel: 'Service Type',
-      website: 'Website',
-      application: 'Mobile App (iOS & Android)',
-      appAndWebsite: 'App and Website',
-      projectDetailsLabel: 'Project Details',
-      projectDetailsPlaceholder: 'Explain your idea, required features, and the goal of the app/website...',
-      devSubmit: 'Submit Request',
-      devSuccessTitle: 'Request Received!',
-      devSuccessMessage: 'Thank you for trusting us. Our development team will contact you soon to discuss your project details and provide a suitable quote.',
-      whyChooseUs: 'Why Choose Us?',
-      devBenefit1: 'Local Expertise',
-      devBenefit1Text: 'Deep understanding of Palestinian market',
-      devBenefit2: 'Modern Tech',
-      devBenefit2Text: 'Using latest technologies and tools',
-      devBenefit3: 'Competitive Prices',
-      devBenefit3Text: 'High quality at reasonable prices',
-      devBenefit4: 'Full Support',
-      devBenefit4Text: 'Technical support and follow-up after delivery'
+    const handleSaviSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null)
+        try {
+            const res = await fetch('/api/request-join-savi', {
+                method: 'POST',
+                headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: formData.name, email: formData.email, phone: formData.phone,
+                    companyType: formData.businessType, companyName: formData.businessName,
+                    city: formData.city, message: formData.message,
+                }),
+            })
+            if (!res.ok) throw new Error(`Server error ${res.status}`)
+            setSubmitted(true)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
     }
-  }
 
-  const t = content[language]
+    const handleDevSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null)
+        try {
+            const res = await fetch('/api/request-service', {
+                method: 'POST',
+                headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: devFormData.name, email: devFormData.email, phone: devFormData.phone,
+                    serviceType: devFormData.serviceType, companyName: devFormData.companyName,
+                    message: devFormData.projectDetails,
+                }),
+            })
+            if (!res.ok) throw new Error(`Server error ${res.status}`)
+            setSubmitted(true)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
-  const handleSaviSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    // نرسل قيمة الـ select مباشرة كـ companyType لأننا نستخدم قيم enum صحيحة
-
-    try {
-      const response = await fetch(`/api/request-join-savi`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          companyType: formData.businessType,
-          companyName: formData.businessName,
-          city: formData.city,
-          message: formData.message
+    const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value})
+    const handleDevChange = (e) => setDevFormData({...devFormData, [e.target.name]: e.target.value})
+    const resetAll = () => {
+        setSubmitted(false);
+        setError(null)
+        setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            businessType: 'FOODANDDRINK',
+            businessName: '',
+            city: '',
+            message: ''
         })
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Error response:', errorText)
-        throw new Error(`Server returned ${response.status}: ${errorText}`)
-      }
-
-      const data = await response.json()
-      console.log('Savi join request submitted successfully:', data)
-      setSubmitted(true)
-    } catch (err) {
-      console.error('Error submitting join request:', err)
-      setError(err.message)
-    } finally {
-      setLoading(false)
+        setDevFormData({name: '', email: '', phone: '', companyName: '', serviceType: 'WEBSITE', projectDetails: ''})
     }
-  }
 
-  const handleDevSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    // نرسل قيمة الخدمة مباشرة كـ serviceType باستخدام القيم المطلوبة: WEBSITE, APPLICATION, APPANDWEBSITE
-
-    try {
-      const response = await fetch(`/api/request-service`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: devFormData.name,
-          email: devFormData.email,
-          phone: devFormData.phone,
-          serviceType: devFormData.serviceType,
-          companyName: devFormData.companyName,
-          message: devFormData.projectDetails
-        })
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Error response:', errorText)
-        throw new Error(`Server returned ${response.status}: ${errorText}`)
-      }
-
-      const data = await response.json()
-      console.log('Development request submitted successfully:', data)
-      setSubmitted(true)
-    } catch (err) {
-      console.error('Error submitting request:', err)
-      setError(err.message)
-    } finally {
-      setLoading(false)
+    const switchTab = (type) => {
+        setJoinType(type);
+        resetAll()
     }
-  }
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+    const benefits = joinType === 'savi'
+        ? [{h: t.benefit1, p: t.benefit1Text}, {h: t.benefit2, p: t.benefit2Text}, {
+            h: t.benefit3,
+            p: t.benefit3Text
+        }, {h: t.benefit4, p: t.benefit4Text}]
+        : [{h: t.devBenefit1, p: t.devBenefit1Text}, {h: t.devBenefit2, p: t.devBenefit2Text}, {
+            h: t.devBenefit3,
+            p: t.devBenefit3Text
+        }, {h: t.devBenefit4, p: t.devBenefit4Text}]
 
-  const handleDevChange = (e) => {
-    setDevFormData({
-      ...devFormData,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const resetForm = () => {
-    setSubmitted(false)
-    setError(null)
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      businessType: 'FOODANDDRINK',
-      businessName: '',
-      city: '',
-      message: ''
-    })
-    setDevFormData({
-      name: '',
-      email: '',
-      phone: '',
-      companyName: '',
-      serviceType: 'WEBSITE',
-      projectDetails: ''
-    })
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-red-600 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {joinType === 'savi' ? t.title : t.devTitle}
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90">
-            {joinType === 'savi' ? t.subtitle : t.devSubtitle}
-          </p>
+    const InputRow = ({label, children}) => (
+        <div>
+            <label className="block text-[0.82rem] font-bold text-gray-700 mb-1.5">{label}</label>
+            {children}
         </div>
-      </section>
+    )
 
-      {/* Tab Navigation */}
-      <section className="py-8 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-4 justify-center flex-wrap">
-            <button
-              onClick={() => { setJoinType('savi'); resetForm(); }}
-              className={`px-8 py-4 rounded-lg font-semibold text-lg transition-all ${
-                joinType === 'savi'
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {t.saviTab}
-            </button>
-            <button
-              onClick={() => { setJoinType('development'); resetForm(); }}
-              className={`px-8 py-4 rounded-lg font-semibold text-lg transition-all ${
-                joinType === 'development'
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {t.developmentTab}
-            </button>
-          </div>
+    const SpinBtn = ({label, disabled}) => (
+        <button type="submit" disabled={disabled || loading}
+                className="btn-primary w-full justify-center py-4 text-[1rem] disabled:opacity-50 disabled:cursor-not-allowed">
+            {loading ? (
+                <span className="flex items-center gap-2">
+          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={3}/>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+          </svg>
+                    {t.submitting}
+        </span>
+            ) : label}
+        </button>
+    )
+
+    return (
+        <div className="min-h-screen bg-white overflow-x-hidden">
+
+            {/* ── HERO ── */}
+            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+                <div className="blob blob-red w-[520px] h-[520px] -top-28 -right-20 opacity-50 animate-float-blob"/>
+                <div className="grid-overlay"/>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
+                    <div className="badge-white mx-auto mb-6 w-fit">
+                        <span className="w-2 h-2 rounded-full bg-[#E80010] animate-pulse inline-block"/>
+                        {joinType === 'savi' ? t.subtitle : t.devSubtitle}
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-black text-white mb-4">
+                        {joinType === 'savi' ? t.title : t.devTitle}
+                    </h1>
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                        {joinType === 'savi' ? t.subtitle : t.devSubtitle}
+                    </p>
+                </div>
+                <div
+                    className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none"/>
+            </section>
+
+            {/* ── TABS ── */}
+            <section className="py-10 bg-white border-b border-gray-100">
+                <div className="max-w-3xl mx-auto px-4">
+                    <div className="flex gap-2 p-2 bg-gray-100 rounded-2xl">
+                        {[
+                            {key: 'savi', label: t.saviTab},
+                            {key: 'development', label: t.developmentTab},
+                        ].map(({key, label}) => (
+                            <button key={key} onClick={() => switchTab(key)}
+                                    className={`flex-1 py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-250 ${
+                                        joinType === key
+                                            ? 'bg-[#E80010] text-white shadow-glow-sm'
+                                            : 'text-gray-600 hover:bg-gray-200/60'
+                                    }`}>
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── INTRO ── */}
+            <section className="py-14">
+                <div className="max-w-3xl mx-auto px-4 text-center reveal">
+                    <p className="text-gray-500 text-lg leading-relaxed">
+                        {joinType === 'savi' ? t.intro : t.devIntro}
+                    </p>
+                </div>
+            </section>
+
+            {/* ── BENEFITS ── */}
+            <section className="pb-20">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-10 reveal">
+                        <h2 className="text-2xl font-black text-[#07080F]">
+                            {joinType === 'savi' ? t.whyJoin : t.whyChooseUs}
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {benefits.map((b, i) => (
+                            <div key={i} className={`feature-card p-7 text-center reveal delay-${(i + 1) * 100}`}>
+                                <div
+                                    className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-[#E80010] font-black">{i + 1}</span>
+                                </div>
+                                <h3 className="font-bold text-[#07080F] text-sm mb-1.5">{b.h}</h3>
+                                <p className="text-gray-500 text-xs leading-relaxed">{b.p}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── FORM ── */}
+            <section className="pb-28 bg-[#f8f8fb]">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+                    <div className="reveal bg-white rounded-[1.6rem] shadow-card-lg border border-gray-100 p-8 md:p-12">
+                        {!submitted ? (
+                            <>
+                                <h2 className="text-2xl font-black text-[#07080F] mb-8 text-center">
+                                    {joinType === 'savi' ? t.formTitle : t.devFormTitle}
+                                </h2>
+
+                                {joinType === 'savi' ? (
+                                    <form onSubmit={handleSaviSubmit} className="space-y-5">
+                                        <InputRow label={t.nameLabel}>
+                                            <input type="text" name="name" value={formData.name} onChange={handleChange}
+                                                   required placeholder={t.namePlaceholder} className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.emailLabel}>
+                                            <input type="email" name="email" value={formData.email}
+                                                   onChange={handleChange} required placeholder={t.emailPlaceholder}
+                                                   className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.phoneLabel}>
+                                            <input type="tel" name="phone" value={formData.phone}
+                                                   onChange={handleChange} required placeholder={t.phonePlaceholder}
+                                                   className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.businessTypeLabel}>
+                                            <select name="businessType" value={formData.businessType}
+                                                    onChange={handleChange} className="input-field">
+                                                <option value="FOODANDDRINK">{t.foodAndDrink}</option>
+                                                <option value="FASHION">{t.fashion}</option>
+                                                <option value="FURNITURE">{t.furniture}</option>
+                                                <option value="BEAUTYANDHELTH">{t.beautyAndHealth}</option>
+                                                <option value="FUN">{t.fun}</option>
+                                                <option value="OTHER">{t.other}</option>
+                                            </select>
+                                        </InputRow>
+                                        <InputRow label={t.businessNameLabel}>
+                                            <input type="text" name="businessName" value={formData.businessName}
+                                                   onChange={handleChange} required
+                                                   placeholder={t.businessNamePlaceholder} className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.cityLabel}>
+                                            <input type="text" name="city" value={formData.city} onChange={handleChange}
+                                                   required placeholder={t.cityPlaceholder} className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.messageLabel}>
+                                            <textarea name="message" value={formData.message} onChange={handleChange}
+                                                      rows={3} placeholder={t.messagePlaceholder}
+                                                      className="input-field resize-none"/>
+                                        </InputRow>
+                                        <SpinBtn label={t.submit}/>
+                                        {error && <p className="text-red-600 text-sm text-center">{t.errorMessage}</p>}
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleDevSubmit} className="space-y-5">
+                                        <InputRow label={t.nameLabel}>
+                                            <input type="text" name="name" value={devFormData.name}
+                                                   onChange={handleDevChange} required placeholder={t.namePlaceholder}
+                                                   className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.emailLabel}>
+                                            <input type="email" name="email" value={devFormData.email}
+                                                   onChange={handleDevChange} required placeholder={t.emailPlaceholder}
+                                                   className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.phoneLabel}>
+                                            <input type="tel" name="phone" value={devFormData.phone}
+                                                   onChange={handleDevChange} required placeholder={t.phonePlaceholder}
+                                                   className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.companyNameLabel}>
+                                            <input type="text" name="companyName" value={devFormData.companyName}
+                                                   onChange={handleDevChange} required
+                                                   placeholder={t.companyNamePlaceholder} className="input-field"/>
+                                        </InputRow>
+                                        <InputRow label={t.serviceTypeLabel}>
+                                            <select name="serviceType" value={devFormData.serviceType}
+                                                    onChange={handleDevChange} className="input-field">
+                                                <option value="WEBSITE">{t.website}</option>
+                                                <option value="APPLICATION">{t.application}</option>
+                                                <option value="APPANDWEBSITE">{t.appAndWebsite}</option>
+                                            </select>
+                                        </InputRow>
+                                        <InputRow label={t.projectDetailsLabel}>
+                                            <textarea name="projectDetails" value={devFormData.projectDetails}
+                                                      onChange={handleDevChange} required rows={5}
+                                                      placeholder={t.projectDetailsPlaceholder}
+                                                      className="input-field resize-none"/>
+                                        </InputRow>
+                                        <SpinBtn label={t.devSubmit}/>
+                                        {error && <p className="text-red-600 text-sm text-center">{t.errorMessage}</p>}
+                                    </form>
+                                )}
+                            </>
+                        ) : (
+                            <div className="text-center py-10">
+                                <div
+                                    className="w-16 h-16 rounded-full bg-[#E80010]/10 border-2 border-[#E80010]/30 flex items-center justify-center mx-auto mb-5">
+                                    <svg className="w-8 h-8 text-[#E80010]" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                                              d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <h2 className="text-2xl font-black text-[#07080F] mb-3">
+                                    {joinType === 'savi' ? t.successTitle : t.devSuccessTitle}
+                                </h2>
+                                <p className="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+                                    {joinType === 'savi' ? t.successMessage : t.devSuccessMessage}
+                                </p>
+                                <a href="/" className="btn-primary mx-auto inline-flex">{t.backHome}</a>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
         </div>
-      </section>
-
-      {/* Intro */}
-      <section className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-lg text-gray-700 text-center leading-relaxed">
-            {joinType === 'savi' ? t.intro : t.devIntro}
-          </p>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-10 text-center">
-            {joinType === 'savi' ? t.whyJoin : t.whyChooseUs}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                {joinType === 'savi' ? t.benefit1 : t.devBenefit1}
-              </h3>
-              <p className="text-gray-600">
-                {joinType === 'savi' ? t.benefit1Text : t.devBenefit1Text}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                {joinType === 'savi' ? t.benefit2 : t.devBenefit2}
-              </h3>
-              <p className="text-gray-600">
-                {joinType === 'savi' ? t.benefit2Text : t.devBenefit2Text}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                {joinType === 'savi' ? t.benefit3 : t.devBenefit3}
-              </h3>
-              <p className="text-gray-600">
-                {joinType === 'savi' ? t.benefit3Text : t.devBenefit3Text}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
-                {joinType === 'savi' ? t.benefit4 : t.devBenefit4}
-              </h3>
-              <p className="text-gray-600">
-                {joinType === 'savi' ? t.benefit4Text : t.devBenefit4Text}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Form Section */}
-      <section className="py-12 pb-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-            {!submitted ? (
-              <>
-                <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-                  {joinType === 'savi' ? t.formTitle : t.devFormTitle}
-                </h2>
-                
-                {joinType === 'savi' ? (
-                  <form onSubmit={handleSaviSubmit} className="space-y-6">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.nameLabel}
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        placeholder={t.namePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.emailLabel}
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        placeholder={t.emailPlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.phoneLabel}
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                        placeholder={t.phonePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.businessTypeLabel}
-                      </label>
-                      <select
-                        name="businessType"
-                        value={formData.businessType}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      >
-                        <option value="FOODANDDRINK">{t.foodAndDrink}</option>
-                        <option value="FASHION">{t.fashion}</option>
-                        <option value="FURNITURE">{t.furniture}</option>
-                        <option value="BEAUTYANDHELTH">{t.beautyAndHealth}</option>
-                        <option value="FUN">{t.fun}</option>
-                        <option value="OTHER">{t.other}</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.businessNameLabel}
-                      </label>
-                      <input
-                        type="text"
-                        name="businessName"
-                        value={formData.businessName}
-                        onChange={handleChange}
-                        required
-                        placeholder={t.businessNamePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.cityLabel}
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleChange}
-                        required
-                        placeholder={t.cityPlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.messageLabel}
-                      </label>
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        rows="4"
-                        placeholder={t.messagePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"
-                      ></textarea>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-primary text-white py-4 rounded-lg font-semibold text-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {loading ? t.submitting : t.submit}
-                    </button>
-
-                    {/* Error Message */}
-                    {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        <p className="font-semibold">{t.errorTitle}</p>
-                        <p>{t.errorMessage}</p>
-                      </div>
-                    )}
-                  </form>
-                ) : (
-                  <form onSubmit={handleDevSubmit} className="space-y-6">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.nameLabel}
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={devFormData.name}
-                        onChange={handleDevChange}
-                        required
-                        placeholder={t.namePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.emailLabel}
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={devFormData.email}
-                        onChange={handleDevChange}
-                        required
-                        placeholder={t.emailPlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.phoneLabel}
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={devFormData.phone}
-                        onChange={handleDevChange}
-                        required
-                        placeholder={t.phonePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.companyNameLabel}
-                      </label>
-                      <input
-                        type="text"
-                        name="companyName"
-                        value={devFormData.companyName}
-                        onChange={handleDevChange}
-                        required
-                        placeholder={t.companyNamePlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.serviceTypeLabel}
-                      </label>
-                      <select
-                        name="serviceType"
-                        value={devFormData.serviceType}
-                        onChange={handleDevChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                      >
-                        <option value="WEBSITE">{t.website}</option>
-                        <option value="APPLICATION">{t.application}</option>
-                        <option value="APPANDWEBSITE">{t.appAndWebsite}</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        {t.projectDetailsLabel}
-                      </label>
-                      <textarea
-                        name="projectDetails"
-                        value={devFormData.projectDetails}
-                        onChange={handleDevChange}
-                        required
-                        rows="6"
-                        placeholder={t.projectDetailsPlaceholder}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"
-                      ></textarea>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-primary text-white py-4 rounded-lg font-semibold text-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {loading ? t.submitting : t.devSubmit}
-                    </button>
-
-                    {/* Error Message */}
-                    {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                        <p className="font-semibold">{t.errorTitle}</p>
-                        <p>{t.errorMessage}</p>
-                      </div>
-                    )}
-                  </form>
-                )}
-              </>
-            ) : (
-              <div className="text-center py-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                  {joinType === 'savi' ? t.successTitle : t.devSuccessTitle}
-                </h2>
-                <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                  {joinType === 'savi' ? t.successMessage : t.devSuccessMessage}
-                </p>
-                <a
-                  href="/"
-                  className="inline-block bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
-                >
-                  {t.backHome}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-    </div>
-  )
+    )
 }
 
 export default Join

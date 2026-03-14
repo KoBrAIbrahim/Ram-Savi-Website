@@ -1,351 +1,193 @@
 import { useState } from 'react'
-import { API_BASE } from '../config'
+import { getPageTranslations } from '../locales'
+import { useScrollReveal } from '../hooks/useScrollReveal'
 
 function Feedback({ language }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    type: 'suggestion',
-    message: ''
-  })
+    const [formData, setFormData] = useState({ name: '', email: '', type: 'suggestion', message: '' })
+    const [submitted, setSubmitted] = useState(false)
+    const [loading,   setLoading]   = useState(false)
+    const [error,     setError]     = useState(null)
+    const t = getPageTranslations(language, 'feedback')
+    useScrollReveal()
 
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+    const typeMapping = { suggestion: 'SUGGESTION', complaint: 'COMPLAINT', question: 'QUESTION', other: 'OTHER' }
 
-  const content = {
-    ar: {
-      title: 'النصائح والشكاوى',
-      subtitle: 'نحن نهتم بآرائكم وملاحظاتكم',
-      intro: 'رأيك يهمنا! سواء كانت لديك اقتراحات لتحسين خدماتنا أو شكاوى تود مشاركتها، نحن هنا للاستماع إليك والعمل على تحسين تجربتك.',
-      formTitle: 'أرسل ملاحظاتك',
-      nameLabel: 'الاسم',
-      namePlaceholder: 'أدخل اسمك',
-      emailLabel: 'البريد الإلكتروني',
-      emailPlaceholder: 'example@email.com',
-      typeLabel: 'نوع الملاحظة',
-      suggestion: 'اقتراح',
-      complaint: 'شكوى',
-      question: 'استفسار',
-      other: 'أخرى',
-      messageLabel: 'رسالتك',
-      messagePlaceholder: 'اكتب ملاحظاتك أو شكواك هنا...',
-      submit: 'إرسال',
-      submitting: 'جاري الإرسال...',
-      successTitle: 'شكراً لك!',
-      successMessage: 'تم استلام رسالتك بنجاح. سنقوم بمراجعتها والرد عليك في أقرب وقت ممكن.',
-      errorTitle: 'حدث خطأ!',
-      errorMessage: 'عذراً، حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى.',
-      sendAnother: 'إرسال ملاحظة أخرى',
-      contactInfo: 'معلومات التواصل',
-      email: 'البريد الإلكتروني',
-      phone: 'الهاتف',
-      whyFeedback: 'لماذا ملاحظاتك مهمة؟',
-      reason1: 'تساعدنا على تحسين خدماتنا',
-      reason2: 'تمكننا من فهم احتياجاتك بشكل أفضل',
-      reason3: 'تساهم في تطوير منتجات أفضل',
-      reason4: 'نقدر وقتك وآرائك'
-    },
-    en: {
-      title: 'Feedback and Complaints',
-      subtitle: 'We Care About Your Opinions and Feedback',
-      intro: 'Your opinion matters to us! Whether you have suggestions to improve our services or complaints you\'d like to share, we\'re here to listen and work on improving your experience.',
-      formTitle: 'Send Your Feedback',
-      nameLabel: 'Name',
-      namePlaceholder: 'Enter your name',
-      emailLabel: 'Email',
-      emailPlaceholder: 'example@email.com',
-      typeLabel: 'Feedback Type',
-      suggestion: 'Suggestion',
-      complaint: 'Complaint',
-      question: 'Question',
-      other: 'Other',
-      messageLabel: 'Your Message',
-      messagePlaceholder: 'Write your feedback or complaint here...',
-      submit: 'Submit',
-      submitting: 'Submitting...',
-      successTitle: 'Thank You!',
-      successMessage: 'Your message has been received successfully. We will review it and respond to you as soon as possible.',
-      errorTitle: 'Error Occurred!',
-      errorMessage: 'Sorry, an error occurred while sending your message. Please try again.',
-      sendAnother: 'Send Another Feedback',
-      contactInfo: 'Contact Information',
-      email: 'Email',
-      phone: 'Phone',
-      whyFeedback: 'Why Your Feedback Matters?',
-      reason1: 'Helps us improve our services',
-      reason2: 'Enables us to better understand your needs',
-      reason3: 'Contributes to developing better products',
-      reason4: 'We value your time and opinions'
-    }
-  }
-
-  const t = content[language]
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    // تحويل نوع الملاحظة إلى complaintType
-    const typeMapping = {
-      'suggestion': 'SUGGESTION',
-      'complaint': 'COMPLAINT',
-      'question': 'QUESTION',
-      'other': 'OTHER'
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true); setError(null)
+        try {
+            const res = await fetch('/api/complaints', {
+                method: 'POST',
+                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    complaintType: typeMapping[formData.type] || 'COMPLAINT',
+                    message: formData.message,
+                }),
+            })
+            if (!res.ok) throw new Error(`Server error ${res.status}`)
+            setSubmitted(true)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    try {
-      console.log('Sending feedback:', {
-        name: formData.name,
-        email: formData.email,
-        complaintType: typeMapping[formData.type] || 'COMPLAINT',
-        message: formData.message
-      });
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+    const resetForm = () => { setFormData({ name: '', email: '', type: 'suggestion', message: '' }); setSubmitted(false); setError(null) }
 
-      const response = await fetch(`/api/complaints`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          complaintType: typeMapping[formData.type] || 'COMPLAINT',
-          message: formData.message
-        })
-      })
+    const reasons = [t.reason1, t.reason2, t.reason3, t.reason4]
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    return (
+        <div className="min-h-screen bg-white overflow-x-hidden">
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`Server returned ${response.status}: ${errorText}`)
-      }
-
-      const data = await response.json()
-      console.log('Feedback submitted successfully:', data)
-      setSubmitted(true)
-    } catch (err) {
-      console.error('Error submitting feedback:', err)
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      email: '',
-      type: 'suggestion',
-      message: ''
-    })
-    setSubmitted(false)
-    setError(null)
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-red-600 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {t.title}
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90">
-            {t.subtitle}
-          </p>
-        </div>
-      </section>
-
-      {/* Intro */}
-      <section className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-lg text-gray-700 text-center leading-relaxed">
-            {t.intro}
-          </p>
-        </div>
-      </section>
-
-      {/* Form Section */}
-      <section className="py-8 pb-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            {!submitted ? (
-              <>
-                <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-                  {t.formTitle}
-                </h2>
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Name */}
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      {t.nameLabel}
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      placeholder={t.namePlaceholder}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      {t.emailLabel}
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder={t.emailPlaceholder}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  {/* Type */}
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      {t.typeLabel}
-                    </label>
-                    <select
-                      name="type"
-                      value={formData.type}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    >
-                      <option value="suggestion">{t.suggestion}</option>
-                      <option value="complaint">{t.complaint}</option>
-                      <option value="question">{t.question}</option>
-                      <option value="other">{t.other}</option>
-                    </select>
-                  </div>
-
-                  {/* Message */}
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      {t.messageLabel}
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows="6"
-                      placeholder={t.messagePlaceholder}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"
-                    ></textarea>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-primary text-white py-4 rounded-lg font-semibold text-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? t.submitting : t.submit}
-                  </button>
-
-                  {/* Error Message */}
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                      <p className="font-semibold">{t.errorTitle}</p>
-                      <p>{t.errorMessage}</p>
+            {/* ── HERO ── */}
+            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+                <div className="blob blob-red w-[500px] h-[500px] -top-28 -right-20 opacity-50 animate-float-blob" />
+                <div className="grid-overlay" />
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
+                    <div className="badge-white mx-auto mb-6 w-fit">
+                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block" />
+                        {language === 'ar' ? 'نهتم برأيك' : 'We Value Your Opinion'}
                     </div>
-                  )}
-                </form>
-              </>
-            ) : (
-              <div className="text-center py-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                  {t.successTitle}
-                </h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  {t.successMessage}
-                </p>
-                <button
-                  onClick={resetForm}
-                  className="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
-                >
-                  {t.sendAnother}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+                    <h1 className="text-5xl md:text-7xl font-black text-white mb-4">{t.title}</h1>
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto">{t.subtitle}</p>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+            </section>
 
-      {/* Why Feedback Matters */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">
-            {t.whyFeedback}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[t.reason1, t.reason2, t.reason3, t.reason4].map((reason, index) => (
-              <div key={index} className="bg-primary/10 rounded-xl p-6 text-center">
-                <p className="text-gray-700 font-semibold">
-                  {reason}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            {/* ── INTRO ── */}
+            <section className="py-16">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                    <p className="text-gray-500 text-lg leading-relaxed">{t.intro}</p>
+                </div>
+            </section>
 
-      {/* Contact Info */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 text-center">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6">
-              {t.contactInfo}
-            </h3>
-            <div className="space-y-3">
-              <p className="text-gray-700">
-                <span className="font-semibold">{t.email}:</span>{' '}
-                <a 
-                  href="mailto:savivoucher@gmail.com" 
-                  className="text-primary hover:underline hover:text-primary-dark transition-colors"
-                >
-                  savivoucher@gmail.com
-                </a>
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">{t.phone}:</span>{' '}
-                <a 
-                  href="tel:+970569432423" 
-                  className="text-primary hover:underline hover:text-primary-dark transition-colors"
-                >
-                  +970569432423
-                </a>
-              </p>
-            </div>
-          </div>
+            {/* ── FORM ── */}
+            <section className="pb-24">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="reveal bg-white rounded-[1.6rem] shadow-card-lg border border-gray-100 p-8 md:p-12">
+                        {!submitted ? (
+                            <>
+                                <h2 className="text-2xl font-black text-[#07080F] mb-8 text-center">{t.formTitle}</h2>
+
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div>
+                                        <label className="block text-[0.85rem] font-bold text-gray-700 mb-2">{t.nameLabel}</label>
+                                        <input type="text" name="name" value={formData.name} onChange={handleChange} required
+                                               placeholder={t.namePlaceholder} className="input-field" />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[0.85rem] font-bold text-gray-700 mb-2">{t.emailLabel}</label>
+                                        <input type="email" name="email" value={formData.email} onChange={handleChange} required
+                                               placeholder={t.emailPlaceholder} className="input-field" />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[0.85rem] font-bold text-gray-700 mb-2">{t.typeLabel}</label>
+                                        <select name="type" value={formData.type} onChange={handleChange} className="input-field">
+                                            <option value="suggestion">{t.suggestion}</option>
+                                            <option value="complaint">{t.complaint}</option>
+                                            <option value="question">{t.question}</option>
+                                            <option value="other">{t.other}</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[0.85rem] font-bold text-gray-700 mb-2">{t.messageLabel}</label>
+                                        <textarea name="message" value={formData.message} onChange={handleChange} required
+                                                  rows={5} placeholder={t.messagePlaceholder}
+                                                  className="input-field resize-none" />
+                                    </div>
+
+                                    <button type="submit" disabled={loading}
+                                            className="btn-primary w-full justify-center py-4 text-[1rem] disabled:opacity-50 disabled:cursor-not-allowed">
+                                        {loading ? (
+                                            <span className="flex items-center gap-2">
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={3}/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                                                {t.submitting}
+                      </span>
+                                        ) : t.submit}
+                                    </button>
+
+                                    {error && (
+                                        <div className="flex gap-3 items-start p-4 bg-red-50 border border-red-200 rounded-xl">
+                                            <span className="text-[#E80010] text-lg">⚠</span>
+                                            <div>
+                                                <p className="font-bold text-[#A3000B] text-sm">{t.errorTitle}</p>
+                                                <p className="text-red-700 text-sm">{t.errorMessage}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </form>
+                            </>
+                        ) : (
+                            <div className="text-center py-10">
+                                <div className="w-16 h-16 rounded-full bg-[#E80010]/10 border-2 border-[#E80010]/30 flex items-center justify-center mx-auto mb-5">
+                                    <svg className="w-8 h-8 text-[#E80010]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-2xl font-black text-[#07080F] mb-3">{t.successTitle}</h2>
+                                <p className="text-gray-500 mb-8 leading-relaxed">{t.successMessage}</p>
+                                <button onClick={resetForm} className="btn-primary mx-auto">{t.sendAnother}</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── WHY FEEDBACK ── */}
+            <section className="py-20 bg-[#f8f8fb]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12 reveal">
+                        <div className="badge-red mx-auto mb-4 w-fit">{t.whyFeedback}</div>
+                        <h2 className="text-3xl font-black text-[#07080F]">{t.whyFeedback}</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {reasons.map((reason, i) => (
+                            <div key={i} className={`feature-card p-6 text-center reveal delay-${(i + 1) * 100}`}>
+                                <div className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-[#E80010] font-black">{i + 1}</span>
+                                </div>
+                                <p className="text-gray-700 font-semibold text-sm">{reason}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── CONTACT ── */}
+            <section className="py-20">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="relative overflow-hidden rounded-[1.6rem] bg-[#07080F] p-10 text-center reveal">
+                        <div className="blob blob-red w-[300px] h-[300px] -top-16 -right-16 opacity-35 animate-float-blob" />
+                        <div className="grid-overlay" />
+                        <div className="relative z-10">
+                            <h3 className="text-2xl font-bold text-white mb-6">{t.contactInfo}</h3>
+                            <div className="space-y-3">
+                                <p className="text-white/65 text-sm">
+                                    <span className="font-semibold text-white/90">{t.email}:</span>{' '}
+                                    <a href="mailto:savi-info@savi.ps" className="text-[#E80010] hover:underline">savi-info@savi.ps</a>
+                                </p>
+                                <p className="text-white/65 text-sm">
+                                    <span className="font-semibold text-white/90">{t.phone}:</span>{' '}
+                                    <a href="tel:+970569432423" className="text-[#E80010] hover:underline">+970569432423</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
-      </section>
-    </div>
-  )
+    )
 }
 
 export default Feedback
-
-
