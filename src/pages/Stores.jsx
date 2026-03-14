@@ -103,9 +103,9 @@ function Stores({ language }) {
                     ) : (
                         <>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-                                {stores.map((store, i) => (
+                                {stores.map((store) => (
                                     <div key={store.id}
-                                         className={`group flex flex-col items-center bg-white rounded-2xl p-5 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all duration-300 reveal delay-${(i % 5) * 100 + 100}`}>
+                                         className="group flex flex-col items-center bg-white rounded-2xl p-5 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all duration-300">
                                         <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/30 transition-all mb-3">
                                             <img
                                                 src={store.logoUrl || '/app_icon.png'}
@@ -132,15 +132,12 @@ function Stores({ language }) {
 
                             {/* Pagination */}
                             {totalPages > 1 && (
-                                <div className="flex items-center justify-center gap-4 mt-14 reveal">
+                                <div className="flex items-center justify-center gap-4 mt-14">
+                                    {/* Previous — outlined ghost style */}
                                     <button
                                         onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                                         disabled={currentPage === 1}
-                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
-                                            currentPage === 1
-                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                : 'bg-white border border-gray-200 text-[#07080F] hover:border-[#E80010]/30 hover:text-[#E80010]'
-                                        }`}
+                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all border disabled:opacity-40 disabled:cursor-not-allowed border-gray-300 bg-white text-[#07080F] hover:border-[#E80010] hover:text-[#E80010]"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -148,6 +145,7 @@ function Stores({ language }) {
                                         {t.previousPage}
                                     </button>
 
+                                    {/* Page numbers */}
                                     <div className="flex items-center gap-1">
                                         {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                                             const page = i + 1
@@ -157,7 +155,7 @@ function Stores({ language }) {
                                                     onClick={() => setCurrentPage(page)}
                                                     className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
                                                         currentPage === page
-                                                            ? 'bg-[#E80010] text-white shadow-glow-sm'
+                                                            ? 'bg-[#E80010] text-white'
                                                             : 'text-gray-500 hover:bg-gray-100'
                                                     }`}
                                                 >
@@ -167,14 +165,12 @@ function Stores({ language }) {
                                         })}
                                     </div>
 
+                                    {/* Next — solid red filled style */}
                                     <button
                                         onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                                         disabled={currentPage === totalPages}
-                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
-                                            currentPage === totalPages
-                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                : 'bg-[#E80010] text-white btn-primary'
-                                        }`}
+                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                                        style={{ backgroundColor: '#E80010', color: '#ffffff' }}
                                     >
                                         {t.nextPage}
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

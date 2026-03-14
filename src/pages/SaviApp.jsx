@@ -227,7 +227,7 @@ function SaviApp({ language }) {
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 mb-10">
                                 {stores.slice(0, 5).map((store) => (
                                     <div key={store.id}
-                                         className="flex flex-col items-center bg-white rounded-2xl p-4 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all group reveal">
+                                         className="flex flex-col items-center bg-white rounded-2xl p-4 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all group">
                                         <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/25 transition-all mb-3">
                                             <img src={store.logoUrl || '/app_icon.png'} alt={store.name}
                                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
