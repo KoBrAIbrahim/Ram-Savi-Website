@@ -29,7 +29,7 @@ function Footer({ language }) {
                         <Link to="/" className="flex items-center gap-3 mb-5 group w-fit">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-[#E80010] rounded-full blur-[8px] opacity-40 group-hover:opacity-65 transition-opacity" />
-                                <img src="/app_icon.png" alt="Ram-Savi" className="relative h-10 w-10 rounded-full ring-2 ring-[#E80010]/30" />
+                                <img src="/saviIconBG3.jpg" alt="Ram-Savi" className="relative h-10 w-10 rounded-full ring-2 ring-[#E80010]/30" />
                             </div>
                             <span className="text-lg font-black text-white">
                 Ram<span className="text-[#E80010]">‑Savi</span>

@@ -28,7 +28,7 @@ function Navbar({ language, setLanguage }) {
                         <div className="relative flex-shrink-0">
                             <div className="absolute inset-0 bg-[#E80010] rounded-full blur-[10px] opacity-50 group-hover:opacity-80 transition-opacity duration-300" />
                             <img
-                                src="/app_icon.png"
+                                src="/saviIconBG3.jpg"
                                 alt="Ram-Savi"
                                 className="relative h-10 w-10 rounded-full ring-2 ring-[#E80010]/30 group-hover:ring-[#E80010]/60 transition-all"
                             />

@@ -69,7 +69,7 @@ function SaviApp({ language }) {
                     <div className="animate-float-slow mb-6 inline-block">
                         <div className="relative">
                             <div className="absolute inset-0 bg-[#E80010] rounded-full blur-2xl opacity-50" />
-                            <img src="/app_icon.png" alt="Savi" className="relative w-28 h-28 md:w-36 md:h-36 rounded-full ring-4 ring-[#E80010]/30 mx-auto" />
+                            <img src="/saviIconBG3.jpg" alt="Savi" className="relative w-28 h-28 md:w-36 md:h-36 rounded-full ring-4 ring-[#E80010]/30 mx-auto" />
                         </div>
                     </div>
 
@@ -229,9 +229,9 @@ function SaviApp({ language }) {
                                     <div key={store.id}
                                          className="flex flex-col items-center bg-white rounded-2xl p-4 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all group">
                                         <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/25 transition-all mb-3">
-                                            <img src={store.logoUrl || '/app_icon.png'} alt={store.name}
+                                            <img src={store.logoUrl || '/saviIconBG3.jpg'} alt={store.name}
                                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                 onError={(e) => { e.target.src = '/app_icon.png' }} />
+                                                 onError={(e) => { e.target.src = '/saviIconBG3.jpg' }} />
                                         </div>
                                         <h3 className="font-bold text-[#07080F] text-xs text-center line-clamp-2">{store.name}</h3>
                                         {store.address && <p className="text-gray-400 text-[0.7rem] mt-1 text-center">{store.address}</p>}

@@ -108,10 +108,10 @@ function Stores({ language }) {
                                          className="group flex flex-col items-center bg-white rounded-2xl p-5 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all duration-300">
                                         <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/30 transition-all mb-3">
                                             <img
-                                                src={store.logoUrl || '/app_icon.png'}
+                                                src={store.logoUrl || '/saviIconBG3.jpg'}
                                                 alt={store.name}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350"
-                                                onError={(e) => { e.target.src = '/app_icon.png' }}
+                                                onError={(e) => { e.target.src = '/saviIconBG3.jpg' }}
                                             />
                                         </div>
                                         <h3 className="font-bold text-[#07080F] text-xs text-center line-clamp-2">{store.name}</h3>
