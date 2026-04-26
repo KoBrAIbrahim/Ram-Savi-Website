@@ -9,6 +9,7 @@ function Stores({ language }) {
     const [error,       setError]       = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages,  setTotalPages]  = useState(1)
+    const [pageCursors, setPageCursors] = useState([null])
     const t = getPageTranslations(language, 'stores')
     useScrollReveal()
 
@@ -18,15 +19,25 @@ function Stores({ language }) {
         try {
             setLoading(true)
             const apiUrl = import.meta.env.VITE_API_COMPANIES_URL
-            const res    = await fetch(`${apiUrl}?page=${currentPage}&limit=10`)
+            const cursor = pageCursors[currentPage - 1]
+            const query  = cursor ? `?limit=10&startAfter=${cursor}` : '?limit=10'
+            const res    = await fetch(`${apiUrl}${query}`)
             if (!res.ok) throw new Error('Failed to fetch stores')
             const data   = await res.json()
             const comps  = data.data || []
             setStores(Array.isArray(comps) ? comps : [])
             if (data.pagination) {
-                setTotalPages(data.pagination.totalPages || data.pagination.total_pages || 1)
-            } else {
-                setTotalPages(1)
+                if (data.pagination.totalCount !== undefined) {
+                    const limit = data.pagination.limit || 10;
+                    setTotalPages(Math.ceil(data.pagination.totalCount / limit) || 1);
+                }
+                if (data.pagination.nextStartAfter) {
+                    setPageCursors(prev => {
+                        const newCursors = [...prev]
+                        newCursors[currentPage] = data.pagination.nextStartAfter
+                        return newCursors
+                    })
+                }
             }
             setError(null)
         } catch (err) {
@@ -149,14 +160,18 @@ function Stores({ language }) {
                                     <div className="flex items-center gap-1">
                                         {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                                             const page = i + 1
+                                            const hasCursor = page === 1 || pageCursors[page - 1] !== undefined
                                             return (
                                                 <button
                                                     key={page}
-                                                    onClick={() => setCurrentPage(page)}
+                                                    onClick={() => hasCursor && setCurrentPage(page)}
+                                                    disabled={!hasCursor && page !== currentPage}
                                                     className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
                                                         currentPage === page
                                                             ? 'bg-[#E80010] text-white'
-                                                            : 'text-gray-500 hover:bg-gray-100'
+                                                            : !hasCursor
+                                                                ? 'text-gray-300 cursor-not-allowed'
+                                                                : 'text-gray-500 hover:bg-gray-100'
                                                     }`}
                                                 >
                                                     {page}
@@ -168,7 +183,7 @@ function Stores({ language }) {
                                     {/* Next — solid red filled style */}
                                     <button
                                         onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                                        disabled={currentPage === totalPages}
+                                        disabled={currentPage === totalPages || pageCursors[currentPage] === undefined}
                                         className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                         style={{ backgroundColor: '#E80010', color: '#ffffff' }}
                                     >
@@ -189,3 +204,4 @@ function Stores({ language }) {
 }
 
 export default Stores
+
