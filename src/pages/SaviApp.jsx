@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { getPageTranslations } from '../locales'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
-const IOS_APP_STORE_URL    = 'https://apps.apple.com/app/id6755399456'
+const IOS_APP_STORE_URL     = 'https://apps.apple.com/app/id6755399456'
 const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.savi.vouchers'
 
 function AppleIcon() {
@@ -18,6 +18,34 @@ function AndroidIcon() {
     return (
         <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
             <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+        </svg>
+    )
+}
+
+// Benefit icons — each maps to one of the 8 customer benefits
+const BENEFIT_ICONS = [
+    // Save money
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+    // Discover
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+    // Daily deals
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+    // One subscription
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>,
+    // Verified
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>,
+    // Instant
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>,
+    // Browse/Filter
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>,
+    // Exclusive
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>,
+]
+
+function StarIcon({ filled = true }) {
+    return (
+        <svg className={`w-4 h-4 ${filled ? 'text-yellow-400' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
     )
 }
@@ -42,25 +70,64 @@ function SaviApp({ language }) {
         })()
     }, [])
 
-    const merchantBenefits  = [t.benefit1, t.benefit2, t.benefit3, t.benefit4, t.benefit5, t.benefit6]
-    const customerBenefits  = [t.benefit7, t.benefit8, t.benefit9, t.benefit10, t.benefit11, t.benefit12]
+    // ── Data arrays ──────────────────────────────────────────────────
+    const benefits = [
+        t.benefit1, t.benefit2, t.benefit3, t.benefit4,
+        t.benefit5, t.benefit6, t.benefit7, t.benefit8,
+    ]
+
+    const steps = [
+        { n: 1, title: t.step1Title, text: t.step1Text,
+            icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> },
+        { n: 2, title: t.step2Title, text: t.step2Text,
+            icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> },
+        { n: 3, title: t.step3Title, text: t.step3Text,
+            icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+    ]
+
     const reasons = [
         { title: t.reason1Title, text: t.reason1Text },
         { title: t.reason2Title, text: t.reason2Text },
         { title: t.reason3Title, text: t.reason3Text },
         { title: t.reason4Title, text: t.reason4Text },
     ]
-    const steps = [
-        { n: 1, title: t.step1Title, text: t.step1Text },
-        { n: 2, title: t.step2Title, text: t.step2Text },
-        { n: 3, title: t.step3Title, text: t.step3Text },
+
+    const stats = [
+        { value: t.stat1Value, label: t.stat1Label },
+        { value: t.stat2Value, label: t.stat2Label },
+        { value: t.stat3Value, label: t.stat3Label },
+        { value: t.stat4Value, label: t.stat4Label },
     ]
+
+
+
+    // ── Download buttons (reused) ────────────────────────────────────
+    const DownloadButtons = ({ dark = true }) => (
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href={IOS_APP_STORE_URL} target="_blank" rel="noopener noreferrer"
+               className={`group flex items-center gap-3 px-6 py-3.5 border rounded-xl transition-all min-w-[210px] justify-center font-semibold
+                ${dark
+                   ? 'bg-white/[0.09] hover:bg-white/[0.15] border-white/[0.15] hover:border-[#E80010]/40 text-white'
+                   : 'bg-[#07080F] hover:bg-[#1a1a2e] border-[#07080F] text-white'}`}>
+                <AppleIcon />
+                <span className="text-sm">{t.downloadIOS}</span>
+            </a>
+            <a href={ANDROID_PLAY_STORE_URL} target="_blank" rel="noopener noreferrer"
+               className={`group flex items-center gap-3 px-6 py-3.5 border rounded-xl transition-all min-w-[210px] justify-center font-semibold
+                ${dark
+                   ? 'bg-white/[0.09] hover:bg-white/[0.15] border-white/[0.15] hover:border-[#E80010]/40 text-white'
+                   : 'bg-[#E80010] hover:bg-[#c8000d] border-[#E80010] text-white'}`}>
+                <AndroidIcon />
+                <span className="text-sm">{t.downloadAndroid}</span>
+            </a>
+        </div>
+    )
 
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
 
             {/* ── HERO ── */}
-            <section className="relative bg-[#07080F] pt-36 pb-24 overflow-hidden">
+            <section className="relative bg-[#07080F] pt-36 pb-28 overflow-hidden">
                 <div className="blob blob-red w-[600px] h-[600px] -top-40 -right-28 opacity-55 animate-float-blob" />
                 <div className="blob blob-red-soft w-[350px] h-[350px] bottom-[-60px] left-[6%] opacity-28 animate-float-blob" style={{ animationDelay: '2.5s' }} />
                 <div className="grid-overlay" />
@@ -69,7 +136,8 @@ function SaviApp({ language }) {
                     <div className="animate-float-slow mb-6 inline-block">
                         <div className="relative">
                             <div className="absolute inset-0 bg-[#E80010] rounded-full blur-2xl opacity-50" />
-                            <img src="/saviIconBG3.jpg" alt="Savi" className="relative w-28 h-28 md:w-36 md:h-36 rounded-full ring-4 ring-[#E80010]/30 mx-auto" />
+                            <img src="/saviIconBG3.jpg" alt="Savi"
+                                 className="relative w-28 h-28 md:w-36 md:h-36 rounded-full ring-4 ring-[#E80010]/30 mx-auto" />
                         </div>
                     </div>
 
@@ -77,34 +145,32 @@ function SaviApp({ language }) {
                         <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block animate-pulse" />
                         Palestine's #1 Deals App
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white mb-4 animate-fade-up anim-delay-100">{t.title}</h1>
-                    <p className="text-xl text-white/60 max-w-2xl mx-auto mb-4 animate-fade-up anim-delay-200">{t.subtitle}</p>
-                    <p className="text-white/45 max-w-xl mx-auto mb-10 text-sm leading-relaxed animate-fade-up anim-delay-300">{t.intro}</p>
 
-                    {/* Download buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-up anim-delay-400">
-                        <a href={IOS_APP_STORE_URL} target="_blank" rel="noopener noreferrer"
-                           className="group flex items-center gap-3 px-6 py-3.5 bg-white/[0.09] hover:bg-white/[0.15] border border-white/[0.15] hover:border-[#E80010]/40 text-white rounded-xl transition-all min-w-[210px] justify-center font-semibold">
-                            <AppleIcon />
-                            <span className="text-sm">{t.downloadIOS}</span>
-                        </a>
-                        <a href={ANDROID_PLAY_STORE_URL} target="_blank" rel="noopener noreferrer"
-                           className="group flex items-center gap-3 px-6 py-3.5 bg-white/[0.09] hover:bg-white/[0.15] border border-white/[0.15] hover:border-[#E80010]/40 text-white rounded-xl transition-all min-w-[210px] justify-center font-semibold">
-                            <AndroidIcon />
-                            <span className="text-sm">{t.downloadAndroid}</span>
-                        </a>
+                    <h1 className="text-5xl md:text-7xl font-black text-white mb-4 animate-fade-up anim-delay-100">
+                        {t.title}
+                    </h1>
+                    <p className="text-xl text-white/70 max-w-2xl mx-auto mb-4 animate-fade-up anim-delay-200">
+                        {t.subtitle}
+                    </p>
+                    <p className="text-white/45 max-w-xl mx-auto mb-10 text-sm leading-relaxed animate-fade-up anim-delay-300">
+                        {t.intro}
+                    </p>
+
+                    {/* Download CTAs — primary action for customers */}
+                    <div className="mb-8 animate-fade-up anim-delay-400">
+                        <DownloadButtons dark />
                     </div>
 
                     <Link to="/savi-details"
-                          className="btn-primary mx-auto inline-flex animate-fade-up anim-delay-500 text-sm">
+                          className="text-white/50 hover:text-white/80 text-sm underline underline-offset-4 transition-colors animate-fade-up anim-delay-500">
                         {t.howToUseSavi}
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
                     </Link>
                 </div>
+
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
             </section>
+
+
 
             {/* ── WHAT IS SAVI ── */}
             <section className="py-24">
@@ -115,7 +181,7 @@ function SaviApp({ language }) {
                 </div>
             </section>
 
-            {/* ── HOW IT WORKS ── */}
+            {/* ── HOW IT WORKS — customer journey ── */}
             <section className="py-20 bg-[#07080F] relative overflow-hidden">
                 <div className="blob blob-red w-[400px] h-[400px] -top-16 -left-16 opacity-28 animate-float-blob" />
                 <div className="grid-overlay" />
@@ -126,16 +192,28 @@ function SaviApp({ language }) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
                         {steps.map((s, i) => (
                             <div key={i} className={`glass-card p-8 reveal delay-${(i+1)*150} hover:border-[#E80010]/30 transition-colors`}>
-                                <div className="w-14 h-14 rounded-2xl bg-[#E80010] flex items-center justify-center mb-5 text-2xl font-black text-white">{s.n}</div>
+                                {/* Step number + icon */}
+                                <div className="flex items-center gap-3 mb-5">
+                                    <div className="w-14 h-14 rounded-2xl bg-[#E80010] flex items-center justify-center text-white flex-shrink-0">
+                                        {s.icon}
+                                    </div>
+                                    <span className="text-white/20 text-5xl font-black leading-none">{s.n}</span>
+                                </div>
                                 <h3 className="text-[1rem] font-bold text-white mb-3">{s.title}</h3>
                                 <p className="text-white/55 text-sm leading-relaxed">{s.text}</p>
                             </div>
                         ))}
                     </div>
+
+                    {/* Inline download nudge */}
+                    <div className="mt-12 text-center reveal">
+                        <p className="text-white/40 text-sm mb-6">Ready to start?</p>
+                        <DownloadButtons dark />
+                    </div>
                 </div>
             </section>
 
-            {/* ── BENEFITS ── */}
+            {/* ── BENEFITS — customer only, 2×4 grid ── */}
             <section className="py-24">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-14 reveal">
@@ -143,45 +221,15 @@ function SaviApp({ language }) {
                         <h2 className="text-3xl md:text-4xl font-black text-[#07080F]">{t.benefits}</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-                        {/* Merchants */}
-                        <div className="feature-card p-8 reveal">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-[#E80010] flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                    </svg>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {benefits.map((b, i) => (
+                            <div key={i} className={`feature-card p-6 reveal delay-${((i % 4) + 1) * 100} hover:border-[#E80010]/20 transition-colors`}>
+                                <div className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mb-4 text-[#E80010]">
+                                    {BENEFIT_ICONS[i]}
                                 </div>
-                                <h3 className="text-lg font-bold text-[#07080F]">{t.forMerchants}</h3>
+                                <p className="text-gray-700 text-sm leading-relaxed font-medium">{b}</p>
                             </div>
-                            <ul className="space-y-3">
-                                {merchantBenefits.map((b, i) => (
-                                    <li key={i} className="flex items-start gap-2.5">
-                                        <span className="w-5 h-5 rounded-full bg-[#E80010]/10 text-[#E80010] text-xs flex items-center justify-center flex-shrink-0 mt-0.5 font-bold">✓</span>
-                                        <span className="text-gray-600 text-sm">{b}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        {/* Customers */}
-                        <div className="feature-card p-8 reveal delay-150">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-[#E80010] flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
-                                </div>
-                                <h3 className="text-lg font-bold text-[#07080F]">{t.forCustomers}</h3>
-                            </div>
-                            <ul className="space-y-3">
-                                {customerBenefits.map((b, i) => (
-                                    <li key={i} className="flex items-start gap-2.5">
-                                        <span className="w-5 h-5 rounded-full bg-[#E80010]/10 text-[#E80010] text-xs flex items-center justify-center flex-shrink-0 mt-0.5 font-bold">✓</span>
-                                        <span className="text-gray-600 text-sm">{b}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -207,7 +255,7 @@ function SaviApp({ language }) {
             </section>
 
             {/* ── PARTNER STORES ── */}
-            <section className="py-24">
+            <section className="py-24 bg-[#f8f8fb]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12 reveal">
                         <div className="badge-red mx-auto mb-4 w-fit">{t.partnerStores}</div>
@@ -265,8 +313,16 @@ function SaviApp({ language }) {
                         <div className="grid-overlay" />
                         <div className="relative z-10">
                             <h2 className="text-3xl md:text-4xl font-black text-white mb-4">{t.learnMore}</h2>
-                            <p className="text-white/55 mb-8">{t.learnMoreText}</p>
-                            <Link to="/savi-details" className="btn-primary mx-auto inline-flex">{t.learnMoreAboutApp}</Link>
+                            <p className="text-white/55 mb-8 max-w-md mx-auto">{t.learnMoreText}</p>
+                            {/* Primary: download buttons */}
+                            <div className="mb-6">
+                                <DownloadButtons dark />
+                            </div>
+                            {/* Secondary: learn more link */}
+                            <Link to="/savi-details"
+                                  className="text-white/40 hover:text-white/70 text-sm underline underline-offset-4 transition-colors">
+                                {t.learnMoreAboutApp}
+                            </Link>
                         </div>
                     </div>
                 </div>
