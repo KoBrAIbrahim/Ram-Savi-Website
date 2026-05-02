@@ -44,14 +44,11 @@ function Feedback({ language }) {
         <div className="min-h-screen bg-white overflow-x-hidden">
 
             {/* ── HERO ── */}
-            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+            <section className="relative bg-[#8B0000] py-32 md:py-40 overflow-hidden">
                 <div className="blob blob-red w-[500px] h-[500px] -top-28 -right-20 opacity-50 animate-float-blob" />
                 <div className="grid-overlay" />
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
-                    <div className="badge-white mx-auto mb-6 w-fit">
-                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block" />
-                        {language === 'ar' ? 'نهتم برأيك' : 'We Value Your Opinion'}
-                    </div>
+
                     <h1 className="text-5xl md:text-7xl font-black text-white mb-4">{t.title}</h1>
                     <p className="text-xl text-white/60 max-w-2xl mx-auto">{t.subtitle}</p>
                 </div>
@@ -152,11 +149,12 @@ function Feedback({ language }) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                         {reasons.map((reason, i) => (
-                            <div key={i} className={`feature-card p-6 text-center reveal delay-${(i + 1) * 100}`}>
-                                <div className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mx-auto mb-4">
-                                    <span className="text-[#E80010] font-black">{i + 1}</span>
+                            <div key={i} className={`p-6 text-center reveal delay-${(i + 1) * 100} rounded-[22px]`}
+                                 style={{ background: '#8B0000' }}>
+                                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-white font-black">{i + 1}</span>
                                 </div>
-                                <p className="text-gray-700 font-semibold text-sm">{reason}</p>
+                                <p className="text-white font-semibold text-sm">{reason}</p>
                             </div>
                         ))}
                     </div>
@@ -166,7 +164,7 @@ function Feedback({ language }) {
             {/* ── CONTACT ── */}
             <section className="py-20">
                 <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative overflow-hidden rounded-[1.6rem] bg-[#07080F] p-10 text-center reveal">
+                    <div className="relative overflow-hidden rounded-[1.6rem] bg-[#8B0000] p-10 text-center reveal">
                         <div className="blob blob-red w-[300px] h-[300px] -top-16 -right-16 opacity-35 animate-float-blob" />
                         <div className="grid-overlay" />
                         <div className="relative z-10">

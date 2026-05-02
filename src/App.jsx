@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -10,16 +10,24 @@ import Feedback from './pages/Feedback'
 import Join from './pages/Join'
 import Stores from './pages/Stores'
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
 function App() {
   const [language, setLanguage] = useState('ar')
 
   return (
     <div className="app" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <ScrollToTop />
       <Navbar language={language} setLanguage={setLanguage} />
       
       <div className="pt-16">
         <Routes>
-          <Route path="/" element={<Home language={language} />} />
+          <Route path="/" element={<Navigate to="/savi-app" replace />} />
+          <Route path="/home" element={<Home language={language} />} />
           <Route path="/about" element={<About language={language} />} />
           <Route path="/savi-app" element={<SaviApp language={language} />} />
           <Route path="/savi-details" element={<SaviDetails language={language} />} />

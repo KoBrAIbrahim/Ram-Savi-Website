@@ -1,12 +1,12 @@
 {
   "home": {
-    "title": "Ram-Savi",
+    "title": "Savi",
     "heroBadge": "Palestinian digital innovation for local business growth",
     "subtitle": "Leading Palestinian Company in Digital Applications and Marketing",
     "description": "We strive to develop innovative electronic applications that serve the Palestinian market and support local business growth through advanced digital marketing solutions.",
     "cta": "Discover More",
     "primaryCta": "Explore Savi App",
-    "secondaryCta": "Learn About Ram-Savi",
+    "secondaryCta": "Learn About Savi",
     "statsTitle": "Built to help real businesses grow",
     "stats": [
       {
@@ -22,7 +22,7 @@
         "label": "Designed for the Palestinian market"
       }
     ],
-    "featureSectionTitle": "Why businesses choose Ram-Savi",
+    "featureSectionTitle": "Why businesses choose Savi",
     "featureSectionSubtitle": "A complete model that combines technology, marketing, and measurable growth.",
     "features": [
       {
@@ -54,16 +54,16 @@
       }
     ],
     "showcaseTitle": "One company, two growth engines",
-    "showcaseText": "Ram-Savi combines digital product development with performance-based marketing through Savi to help local brands scale with confidence.",
+    "showcaseText": "Savi combines digital product development with performance-based marketing through Savi to help local brands scale with confidence.",
     "finalCtaTitle": "Ready to build your next growth step?",
     "finalCtaText": "Whether you need more customers through Savi or a full digital product, our team is ready to help.",
     "finalCtaButton": "Start with Us"
   },
   "about": {
-    "title": "About Ram-Savi",
+    "title": "About Savi",
     "subtitle": "Palestinian Vision.. Digital Innovation",
     "whoWeAre": "Who We Are",
-    "whoWeAreText": "Ram-Savi is a Palestinian startup specialized in developing electronic applications and digital marketing solutions. The company was founded with a clear vision: supporting local Palestinian businesses through modern technology and digital innovation.",
+    "whoWeAreText": "Savi is a Palestinian startup specialized in developing electronic applications and digital marketing solutions. The company was founded with a clear vision: supporting local Palestinian businesses through modern technology and digital innovation.",
     "ourMission": "Our Mission",
     "ourMissionText": "We strive to develop innovative electronic applications that serve the Palestinian market and support local business growth through advanced digital marketing solutions. We believe that technology can be a bridge to business success and economic growth.",
     "ourVision": "Our Vision",
@@ -78,7 +78,7 @@
     "feature4Title": "Continuous Support",
     "feature4Text": "We provide continuous technical support and regular updates to ensure the best performance of our applications.",
     "ourStory": "Our Story",
-    "ourStoryText": "Ram-Savi started as a simple idea: How can we help local restaurants and stores face economic challenges and increase their sales? From this question, the Savi app was born - a digital platform connecting merchants with customers through smart performance-based offers.",
+    "ourStoryText": "Savi started as a simple idea: How can we help local restaurants and stores face economic challenges and increase their sales? From this question, the Savi app was born - a digital platform connecting merchants with customers through smart performance-based offers.",
     "ourValues": "Our Values",
     "values": [
       "Innovation and Creativity",
@@ -288,10 +288,12 @@
     "about": "About",
     "savi": "Savi App",
     "feedback": "Feedback",
-    "join": "Join Us"
+    "join": "Join Us",
+    "howToUse": "How to Use",
+    "stores": "Our Partners"
   },
   "footer": {
-    "rights": "© 2026 Ram-Savi. All rights reserved.",
+    "rights": "© 2026 Savi. All rights reserved.",
     "palestine": "Made in Palestine 🇵🇸",
     "followUs": "Follow Us",
     "contactTitle": "Contact",

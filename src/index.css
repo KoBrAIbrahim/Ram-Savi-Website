@@ -6,10 +6,10 @@
 
 /* ── CSS Variables ─────────────────────────────── */
 :root {
-    --primary:        #E80010;
-    --primary-light:  #FF3545;
-    --primary-dark:   #A3000B;
-    --primary-glow:   rgba(232, 0, 16, 0.45);
+    --primary:        #FF0000;
+    --primary-light:  #FF3333;
+    --primary-dark:   #CC0000;
+    --primary-glow:   rgba(255, 0, 0, 0.45);
     --dark:           #07080F;
     --dark-2:         #0F1018;
     --dark-3:         #161722;

@@ -52,7 +52,7 @@ function SaviDetails({ language }) {
         return (
             <div className="min-h-screen bg-white">
                 {/* Header */}
-                <section className="relative bg-[#07080F] py-24 overflow-hidden">
+                <section className="relative bg-[#8B0000] py-24 overflow-hidden">
                     <div className="blob blob-red w-[400px] h-[400px] -top-20 -right-20 opacity-40 animate-float-blob" />
                     <div className="grid-overlay" />
                     <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,14 +117,11 @@ function SaviDetails({ language }) {
     /* ── GALLERY ── */
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
-            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+            <section className="relative bg-[#8B0000] py-32 md:py-40 overflow-hidden">
                 <div className="blob blob-red w-[520px] h-[520px] -top-28 -right-20 opacity-50 animate-float-blob" />
                 <div className="grid-overlay" />
                 <div className="relative z-10 max-w-7xl mx-auto px-4 text-center animate-fade-up pt-10">
-                    <div className="badge-white mx-auto mb-6 w-fit">
-                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block" />
-                        {t.screenGallery}
-                    </div>
+
                     <h1 className="text-5xl md:text-7xl font-black text-white mb-4">{t.title}</h1>
                     <p className="text-white/60 max-w-2xl mx-auto">{t.subtitle}</p>
                 </div>

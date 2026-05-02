@@ -96,14 +96,14 @@ function Join({ language }) {
   const switchTab = (type) => { setJoinType(type); resetAll() }
 
   const benefits = joinType === 'savi'
-    ? [{ h: t.benefit1, p: t.benefit1Text }, { h: t.benefit2, p: t.benefit2Text }, { h: t.benefit3, p: t.benefit3Text }, { h: t.benefit4, p: t.benefit4Text }]
-    : [{ h: t.devBenefit1, p: t.devBenefit1Text }, { h: t.devBenefit2, p: t.devBenefit2Text }, { h: t.devBenefit3, p: t.devBenefit3Text }, { h: t.devBenefit4, p: t.devBenefit4Text }]
+    ? [{ h: t.benefit2, p: t.benefit2Text }, { h: t.benefit3, p: t.benefit3Text }, { h: t.benefit4, p: t.benefit4Text }]
+    : [{ h: t.devBenefit2, p: t.devBenefit2Text }, { h: t.devBenefit3, p: t.devBenefit3Text }, { h: t.devBenefit4, p: t.devBenefit4Text }]
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
 
       {/* ── HERO ── */}
-      <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+      <section className="relative bg-[#8B0000] py-32 md:py-40 overflow-hidden">
         <div className="blob blob-red w-[520px] h-[520px] -top-28 -right-20 opacity-50 animate-float-blob" />
         <div className="grid-overlay" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
@@ -132,7 +132,7 @@ function Join({ language }) {
               <button key={key} onClick={() => switchTab(key)}
                 className={`flex-1 py-3.5 px-4 rounded-xl font-bold text-sm transition-all duration-250 ${
                   joinType === key
-                    ? 'bg-[#E80010] text-white shadow-glow-sm'
+                    ? 'bg-[#FF0000] text-white shadow-glow-sm'
                     : 'text-gray-600 hover:bg-gray-200/60'
                 }`}>
                 {label}
@@ -162,8 +162,8 @@ function Join({ language }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {benefits.map((b, i) => (
               <div key={i} className={`feature-card p-7 text-center reveal delay-${(i + 1) * 100}`}>
-                <div className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-[#E80010] font-black">{i + 1}</span>
+                <div className="w-10 h-10 rounded-xl bg-[#FF0000]/10 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-[#FF0000] font-black">{i + 1}</span>
                 </div>
                 <h3 className="font-bold text-[#07080F] text-sm mb-1.5">{b.h}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed">{b.p}</p>
@@ -247,8 +247,8 @@ function Join({ language }) {
               </>
             ) : (
               <div className="text-center py-10">
-                <div className="w-16 h-16 rounded-full bg-[#E80010]/10 border-2 border-[#E80010]/30 flex items-center justify-center mx-auto mb-5">
-                  <svg className="w-8 h-8 text-[#E80010]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 rounded-full bg-[#FF0000]/10 border-2 border-[#FF0000]/30 flex items-center justify-center mx-auto mb-5">
+                  <svg className="w-8 h-8 text-[#FF0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>

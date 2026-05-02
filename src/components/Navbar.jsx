@@ -12,30 +12,30 @@ function Navbar({ language, setLanguage }) {
     const isActive = (path) => location.pathname === path
 
     const navLinks = [
-        { path: '/',         label: t.home },
-        { path: '/about',    label: t.about },
-        { path: '/savi-app', label: t.savi },
-        { path: '/feedback', label: t.feedback },
+        { path: '/savi-app',     label: t.savi },
+        { path: '/savi-details', label: t.howToUse },
+        { path: '/stores',       label: t.stores },
+        { path: '/feedback',     label: t.feedback },
     ]
 
     return (
-        <nav style={{ backgroundColor: '#07080F' }} className="fixed w-full top-0 z-50 border-b border-white/10 shadow-lg">
+        <nav style={{ backgroundColor: '#8B0000' }} className="fixed w-full top-0 z-50 border-b border-white/20 shadow-lg">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-[70px]">
 
                     {/* ── Logo ── */}
-                    <Link to="/" className="flex items-center gap-3 group select-none">
+                    <Link to="/savi-app" className="flex items-center gap-3 group select-none">
                         <div className="relative flex-shrink-0">
-                            <div className="absolute inset-0 bg-[#E80010] rounded-full blur-[10px] opacity-50 group-hover:opacity-80 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-white rounded-full blur-[10px] opacity-20 group-hover:opacity-35 transition-opacity duration-300" />
                             <img
                                 src="/saviIconBG3.jpg"
-                                alt="Ram-Savi"
-                                className="relative h-10 w-10 rounded-full ring-2 ring-[#E80010]/30 group-hover:ring-[#E80010]/60 transition-all"
+                                alt="Savi"
+                                className="relative h-10 w-10 rounded-full ring-2 ring-white/30 group-hover:ring-white/60 transition-all"
                             />
                         </div>
                         <span className="text-[1.2rem] font-black text-white tracking-tight">
-              Ram<span className="text-[#E80010]">‑Savi</span>
-            </span>
+                            <span className="text-white/90">Savi</span>
+                        </span>
                     </Link>
 
                     {/* ── Desktop Links ── */}
@@ -46,14 +46,11 @@ function Navbar({ language, setLanguage }) {
                                 to={path}
                                 className={`relative px-4 py-2 text-[0.875rem] font-semibold rounded-lg transition-all duration-200 ${
                                     isActive(path)
-                                        ? 'text-white'
-                                        : 'text-white/60 hover:text-white hover:bg-white/[0.07]'
+                                        ? 'text-white bg-[#8B0000]/60'
+                                        : 'text-white/70 hover:text-white hover:bg-white/[0.12]'
                                 }`}
                             >
                                 {label}
-                                {isActive(path) && (
-                                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-[2.5px] rounded-full bg-[#E80010]" />
-                                )}
                             </Link>
                         ))}
                     </div>
@@ -62,11 +59,15 @@ function Navbar({ language, setLanguage }) {
                     <div className="hidden md:flex items-center gap-3">
                         <button
                             onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-                            className="px-3 py-1.5 text-[0.8rem] font-bold text-white/70 hover:text-white border border-white/[0.14] hover:border-white/30 rounded-lg transition-all duration-200"
+                            className="px-3 py-1.5 text-[0.8rem] font-bold text-white/80 hover:text-white border border-white/30 hover:border-white/60 rounded-lg transition-all duration-200"
                         >
                             {language === 'ar' ? 'EN' : 'ع'}
                         </button>
-                        <Link to="/join" className="btn-primary text-[0.875rem]">
+                        <Link
+                            to="/join"
+                            className="inline-flex items-center gap-2 px-4 py-2 text-[0.875rem] font-bold rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                            style={{ background: 'rgba(255,255,255,0.95)', color: '#FF0000' }}
+                        >
                             {t.join}
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -78,14 +79,14 @@ function Navbar({ language, setLanguage }) {
                     <div className="md:hidden flex items-center gap-2">
                         <button
                             onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-                            className="px-3 py-1.5 text-[0.8rem] font-bold text-white/70 border border-white/[0.14] rounded-lg"
+                            className="px-3 py-1.5 text-[0.8rem] font-bold text-white/80 border border-white/30 rounded-lg"
                         >
                             {language === 'ar' ? 'EN' : 'ع'}
                         </button>
                         <button
                             onClick={() => setMobileOpen(!mobileOpen)}
                             aria-label="Toggle menu"
-                            className="p-2 text-white/80 hover:text-white transition-colors"
+                            className="p-2 text-white/90 hover:text-white transition-colors"
                         >
                             <div className="w-5 h-4 flex flex-col justify-between">
                                 <span className={`block h-[2px] bg-current rounded-full transition-all duration-300 origin-center ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
@@ -103,15 +104,15 @@ function Navbar({ language, setLanguage }) {
                     mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}
             >
-                <div className="bg-[#0F1018]/98 backdrop-blur-2xl border-t border-white/[0.06] px-4 pt-3 pb-5 space-y-1">
+                <div style={{ backgroundColor: 'rgba(204,0,0,0.97)' }} className="backdrop-blur-2xl border-t border-white/10 px-4 pt-3 pb-5 space-y-1">
                     {navLinks.map(({ path, label }) => (
                         <Link
                             key={path}
                             to={path}
                             className={`flex items-center px-4 py-3 rounded-xl text-[0.9rem] font-semibold transition-all ${
                                 isActive(path)
-                                    ? 'bg-[#E80010]/14 text-[#E80010]'
-                                    : 'text-white/65 hover:bg-white/[0.06] hover:text-white'
+                                    ? 'bg-[#8B0000]/60 text-white'
+                                    : 'text-white/75 hover:bg-white/10 hover:text-white'
                             }`}
                         >
                             {label}
@@ -120,7 +121,8 @@ function Navbar({ language, setLanguage }) {
                     <div className="pt-2">
                         <Link
                             to="/join"
-                            className="btn-primary w-full justify-center text-[0.9rem] block text-center"
+                            className="w-full block text-center text-[0.9rem] font-bold py-3 rounded-xl transition-all"
+                            style={{ background: 'rgba(255,255,255,0.95)', color: '#FF0000' }}
                         >
                             {t.join}
                         </Link>

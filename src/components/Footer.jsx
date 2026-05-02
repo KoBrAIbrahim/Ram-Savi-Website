@@ -5,18 +5,18 @@ function Footer({ language }) {
     const t = getPageTranslations(language, 'footer')
 
     const navLinks = [
-        { path: '/',         label: 'home' },
-        { path: '/about',    label: 'about' },
-        { path: '/savi-app', label: 'savi' },
-        { path: '/feedback', label: 'feedback' },
-        { path: '/join',     label: 'join' },
+        { path: '/savi-app',     label: 'savi' },
+        { path: '/savi-details', label: 'howToUse' },
+        { path: '/stores',       label: 'stores' },
+        { path: '/feedback',     label: 'feedback' },
+        { path: '/join',         label: 'join' },
     ]
     const navT = getPageTranslations(language, 'navbar')
 
     return (
         <footer className="bg-[#07080F] relative overflow-hidden">
             {/* Top red line */}
-            <div className="h-[2px] bg-gradient-to-r from-transparent via-[#E80010] to-transparent" />
+            <div className="h-[2px] bg-gradient-to-r from-transparent via-[#FF0000] to-transparent" />
 
             {/* Decorative blob */}
             <div className="blob blob-red-soft w-[400px] h-[400px] bottom-[-120px] right-[-80px] opacity-20 pointer-events-none" />
@@ -26,14 +26,14 @@ function Footer({ language }) {
 
                     {/* Brand column */}
                     <div>
-                        <Link to="/" className="flex items-center gap-3 mb-5 group w-fit">
+                        <Link to="/savi-app" className="flex items-center gap-3 mb-5 group w-fit">
                             <div className="relative">
-                                <div className="absolute inset-0 bg-[#E80010] rounded-full blur-[8px] opacity-40 group-hover:opacity-65 transition-opacity" />
-                                <img src="/saviIconBG3.jpg" alt="Ram-Savi" className="relative h-10 w-10 rounded-full ring-2 ring-[#E80010]/30" />
+                                <div className="absolute inset-0 bg-[#FF0000] rounded-full blur-[8px] opacity-40 group-hover:opacity-65 transition-opacity" />
+                                <img src="/saviIconBG3.jpg" alt="Savi" className="relative h-10 w-10 rounded-full ring-2 ring-[#FF0000]/30" />
                             </div>
                             <span className="text-lg font-black text-white">
-                Ram<span className="text-[#E80010]">‑Savi</span>
-              </span>
+                               <span className="text-[#FF0000]">Savi</span>
+                            </span>
                         </Link>
                         <p className="text-white/45 text-sm leading-relaxed mb-6 max-w-[240px]">
                             {language === 'ar'
@@ -47,7 +47,7 @@ function Footer({ language }) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Facebook"
-                                className="w-9 h-9 rounded-lg bg-white/[0.07] hover:bg-[#E80010]/20 border border-white/[0.09] hover:border-[#E80010]/30 flex items-center justify-center text-white/55 hover:text-[#E80010] transition-all duration-200"
+                                className="w-9 h-9 rounded-lg bg-white/[0.07] hover:bg-[#FF0000]/20 border border-white/[0.09] hover:border-[#FF0000]/30 flex items-center justify-center text-white/55 hover:text-[#FF0000] transition-all duration-200"
                             >
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -58,7 +58,7 @@ function Footer({ language }) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Instagram"
-                                className="w-9 h-9 rounded-lg bg-white/[0.07] hover:bg-[#E80010]/20 border border-white/[0.09] hover:border-[#E80010]/30 flex items-center justify-center text-white/55 hover:text-[#E80010] transition-all duration-200"
+                                className="w-9 h-9 rounded-lg bg-white/[0.07] hover:bg-[#FF0000]/20 border border-white/[0.09] hover:border-[#FF0000]/30 flex items-center justify-center text-white/55 hover:text-[#FF0000] transition-all duration-200"
                             >
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -96,7 +96,7 @@ function Footer({ language }) {
                                 href={`mailto:${t.email}`}
                                 className="flex items-center gap-2.5 text-white/55 hover:text-white text-sm transition-colors group"
                             >
-                                <div className="w-7 h-7 rounded-md bg-white/[0.07] flex items-center justify-center flex-shrink-0 group-hover:bg-[#E80010]/20 transition-colors">
+                                <div className="w-7 h-7 rounded-md bg-white/[0.07] flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF0000]/20 transition-colors">
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
@@ -107,7 +107,7 @@ function Footer({ language }) {
                                 href={`tel:${t.phone}`}
                                 className="flex items-center gap-2.5 text-white/55 hover:text-white text-sm transition-colors group"
                             >
-                                <div className="w-7 h-7 rounded-md bg-white/[0.07] flex items-center justify-center flex-shrink-0 group-hover:bg-[#E80010]/20 transition-colors">
+                                <div className="w-7 h-7 rounded-md bg-white/[0.07] flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF0000]/20 transition-colors">
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                                     </svg>
@@ -122,7 +122,7 @@ function Footer({ language }) {
                 <div className="h-px bg-white/[0.07] mb-6" />
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                     <p className="text-white/30 text-xs">{t.rights}</p>
-                    <p className="text-[#E80010] text-xs font-bold">{t.palestine}</p>
+                    <p className="text-[#FF0000] text-xs font-bold">{t.palestine}</p>
                 </div>
             </div>
         </footer>

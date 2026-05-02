@@ -20,7 +20,7 @@ function Stores({ language }) {
             setLoading(true)
             const apiUrl = import.meta.env.VITE_API_COMPANIES_URL
             const cursor = pageCursors[currentPage - 1]
-            const query  = cursor ? `?limit=10&startAfter=${cursor}` : '?limit=10'
+            const query  = cursor ? `?limit=20&startAfter=${cursor}` : '?limit=20'
             const res    = await fetch(`${apiUrl}${query}`)
             if (!res.ok) throw new Error('Failed to fetch stores')
             const data   = await res.json()
@@ -78,14 +78,11 @@ function Stores({ language }) {
         <div className="min-h-screen bg-white overflow-x-hidden">
 
             {/* ── HERO ── */}
-            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+            <section className="relative bg-[#8B0000] py-32 md:py-40 overflow-hidden">
                 <div className="blob blob-red w-[500px] h-[500px] -top-24 -right-20 opacity-50 animate-float-blob" />
                 <div className="grid-overlay" />
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up pt-10">
-                    <div className="badge-white mx-auto mb-6 w-fit">
-                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block animate-pulse" />
-                        {language === 'ar' ? 'شركاؤنا' : 'Our Partners'}
-                    </div>
+
                     <h1 className="text-5xl md:text-7xl font-black text-white mb-6">{t.title}</h1>
                     <Link to="/savi-app" className="btn-ghost text-sm mx-auto inline-flex">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

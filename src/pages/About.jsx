@@ -15,7 +15,7 @@ function About({ language }) {
         <div className="min-h-screen bg-white overflow-x-hidden">
 
             {/* ── HERO ── */}
-            <section className="relative bg-[#07080F] py-32 md:py-40 overflow-hidden">
+            <section className="relative bg-[#8B0000] py-32 md:py-40 overflow-hidden">
                 <div className="blob blob-red w-[520px] h-[520px] -top-32 -right-24 opacity-50 animate-float-blob" />
                 <div className="blob blob-red-soft w-[320px] h-[320px] bottom-[-60px] left-[10%] opacity-25 animate-float-blob" style={{ animationDelay: '2s' }} />
                 <div className="grid-overlay" />
@@ -46,7 +46,7 @@ function About({ language }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
 
-                        <div className="relative overflow-hidden rounded-[1.4rem] bg-[#07080F] p-10 reveal">
+                        <div className="relative overflow-hidden rounded-[1.4rem] bg-[#8B0000] p-10 reveal">
                             <div className="blob blob-red w-[280px] h-[280px] -top-16 -right-16 opacity-40 animate-float-blob" />
                             <div className="grid-overlay" />
                             <div className="relative z-10">
@@ -102,7 +102,7 @@ function About({ language }) {
             </section>
 
             {/* ── OUR STORY ── */}
-            <section className="py-16 pb-24 bg-[#07080F] relative overflow-hidden">
+            <section className="py-16 pb-24 bg-[#8B0000] relative overflow-hidden">
                 <div className="blob blob-red w-[450px] h-[450px] -top-24 -left-24 opacity-28 animate-float-blob" />
                 <div className="grid-overlay" />
                 <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">

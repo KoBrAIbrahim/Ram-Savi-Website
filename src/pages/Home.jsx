@@ -20,7 +20,7 @@ function Home({ language }) {
             {/* ══════════════════════════════════════
           HERO  (dark, full-screen)
       ══════════════════════════════════════ */}
-            <section className="relative min-h-screen flex items-center bg-[#07080F] overflow-hidden">
+            <section className="relative min-h-screen flex items-center bg-[#8B0000] overflow-hidden">
                 {/* Animated blobs */}
                 <div className="blob blob-red w-[640px] h-[640px] -top-40 -right-32 opacity-55 animate-float-blob" />
                 <div className="blob blob-red w-[380px] h-[380px] bottom-[-80px] left-[8%] opacity-28 animate-float-blob" style={{ animationDelay: '3.5s' }} />
@@ -115,7 +115,7 @@ function Home({ language }) {
             {/* ══════════════════════════════════════
           HOW IT WORKS  (dark)
       ══════════════════════════════════════ */}
-            <section className="py-28 bg-[#07080F] relative overflow-hidden">
+            <section className="py-28 bg-[#8B0000] relative overflow-hidden">
                 <div className="blob blob-red w-[420px] h-[420px] -top-20 -right-20 opacity-30 animate-float-blob" />
                 <div className="blob blob-red-soft w-[300px] h-[300px] bottom-0 left-[5%] opacity-20 animate-float-blob" style={{ animationDelay: '2s' }} />
                 <div className="grid-overlay" />
@@ -144,7 +144,7 @@ function Home({ language }) {
       ══════════════════════════════════════ */}
             <section className="py-28 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative overflow-hidden rounded-[2rem] bg-[#07080F] p-12 md:p-16 reveal">
+                    <div className="relative overflow-hidden rounded-[2rem] bg-[#8B0000] p-12 md:p-16 reveal">
                         <div className="blob blob-red w-[500px] h-[500px] -top-32 -right-24 opacity-45 animate-float-blob" />
                         <div className="grid-overlay" />
 

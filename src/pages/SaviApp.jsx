@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
 import { getPageTranslations } from '../locales'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
@@ -8,16 +7,19 @@ const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=co
 
 function AppleIcon() {
     return (
-        <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-7 h-7 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
         </svg>
     )
 }
 
-function AndroidIcon() {
+function GooglePlayIcon() {
     return (
-        <svg className="w-6 h-6 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+        <svg viewBox="0 0 24 24" width="26" height="26" className="flex-shrink-0">
+            <path d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.6 3 21.09 3 20.5Z" fill="#EA4335"/>
+            <path d="M16.81 15.12L6.05 21.34L14.54 12.85L16.81 15.12Z" fill="#FBBC04"/>
+            <path d="M20.16 10.81C20.5 11.08 20.75 11.5 20.75 12C20.75 12.5 20.53 12.9 20.18 13.18L17.89 14.5L15.39 12L17.89 9.5L20.16 10.81Z" fill="#4285F4"/>
+            <path d="M6.05 2.66L16.81 8.88L14.54 11.15L6.05 2.66Z" fill="#34A853"/>
         </svg>
     )
 }
@@ -42,33 +44,9 @@ const BENEFIT_ICONS = [
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>,
 ]
 
-function StarIcon({ filled = true }) {
-    return (
-        <svg className={`w-4 h-4 ${filled ? 'text-yellow-400' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-        </svg>
-    )
-}
-
 function SaviApp({ language }) {
-    const [stores,        setStores]        = useState([])
-    const [loadingStores, setLoadingStores] = useState(true)
     const t = getPageTranslations(language, 'saviApp')
     useScrollReveal()
-
-    useEffect(() => {
-        ;(async () => {
-            try {
-                setLoadingStores(true)
-                const apiUrl = import.meta.env.VITE_API_COMPANIES_URL
-                const res    = await fetch(`${apiUrl}?page=1&limit=10`)
-                if (!res.ok) throw new Error()
-                const data   = await res.json()
-                const comps  = data.data || []
-                setStores(Array.isArray(comps) ? comps : [])
-            } catch { /* silent */ } finally { setLoadingStores(false) }
-        })()
-    }, [])
 
     // ── Data arrays ──────────────────────────────────────────────────
     const benefits = [
@@ -92,33 +70,26 @@ function SaviApp({ language }) {
         { title: t.reason4Title, text: t.reason4Text },
     ]
 
-    const stats = [
-        { value: t.stat1Value, label: t.stat1Label },
-        { value: t.stat2Value, label: t.stat2Label },
-        { value: t.stat3Value, label: t.stat3Label },
-        { value: t.stat4Value, label: t.stat4Label },
-    ]
-
-
-
-    // ── Download buttons (reused) ────────────────────────────────────
-    const DownloadButtons = ({ dark = true }) => (
+    // ── Download buttons — App Store / Google Play badge style ────────
+    const DownloadButtons = () => (
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href={IOS_APP_STORE_URL} target="_blank" rel="noopener noreferrer"
-               className={`group flex items-center gap-3 px-6 py-3.5 border rounded-xl transition-all min-w-[210px] justify-center font-semibold
-                ${dark
-                   ? 'bg-white/[0.09] hover:bg-white/[0.15] border-white/[0.15] hover:border-[#E80010]/40 text-white'
-                   : 'bg-[#07080F] hover:bg-[#1a1a2e] border-[#07080F] text-white'}`}>
+               className="flex items-center gap-3 px-5 py-3 rounded-xl transition-all hover:opacity-90 hover:-translate-y-0.5 min-w-[185px]"
+               style={{ background: '#000000', color: '#ffffff' }}>
                 <AppleIcon />
-                <span className="text-sm">{t.downloadIOS}</span>
+                <div className="text-left">
+                    <div className="text-[0.62rem] leading-none opacity-80 tracking-wide">Download on the</div>
+                    <div className="text-[1.1rem] font-bold leading-tight mt-0.5">App Store</div>
+                </div>
             </a>
             <a href={ANDROID_PLAY_STORE_URL} target="_blank" rel="noopener noreferrer"
-               className={`group flex items-center gap-3 px-6 py-3.5 border rounded-xl transition-all min-w-[210px] justify-center font-semibold
-                ${dark
-                   ? 'bg-white/[0.09] hover:bg-white/[0.15] border-white/[0.15] hover:border-[#E80010]/40 text-white'
-                   : 'bg-[#E80010] hover:bg-[#c8000d] border-[#E80010] text-white'}`}>
-                <AndroidIcon />
-                <span className="text-sm">{t.downloadAndroid}</span>
+               className="flex items-center gap-3 px-5 py-3 rounded-xl transition-all hover:opacity-90 hover:-translate-y-0.5 min-w-[185px]"
+               style={{ background: '#000000', color: '#ffffff' }}>
+                <GooglePlayIcon />
+                <div className="text-left">
+                    <div className="text-[0.62rem] leading-none opacity-80 tracking-widest uppercase">Get it on</div>
+                    <div className="text-[1.1rem] font-semibold leading-tight mt-0.5">Google Play</div>
+                </div>
             </a>
         </div>
     )
@@ -127,22 +98,22 @@ function SaviApp({ language }) {
         <div className="min-h-screen bg-white overflow-x-hidden">
 
             {/* ── HERO ── */}
-            <section className="relative bg-[#07080F] pt-36 pb-28 overflow-hidden">
+            <section className="relative bg-[#8B0000] pt-36 pb-28 overflow-hidden">
                 <div className="blob blob-red w-[600px] h-[600px] -top-40 -right-28 opacity-55 animate-float-blob" />
                 <div className="blob blob-red-soft w-[350px] h-[350px] bottom-[-60px] left-[6%] opacity-28 animate-float-blob" style={{ animationDelay: '2.5s' }} />
                 <div className="grid-overlay" />
 
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="animate-float-slow mb-6 inline-block">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-[#E80010] rounded-full blur-2xl opacity-50" />
-                            <img src="/saviIconBG3.jpg" alt="Savi"
-                                 className="relative w-28 h-28 md:w-36 md:h-36 rounded-full ring-4 ring-[#E80010]/30 mx-auto" />
-                        </div>
-                    </div>
+                {/* Watermark logo — left for EN, right for AR */}
+                <div
+                    className={`absolute top-0 bottom-0 flex items-center pointer-events-none select-none hidden lg:flex ${language === 'ar' ? 'right-0' : 'left-0'}`}
+                    style={{ opacity: 0.80 }}
+                >
+                    <img src="/saviIcon3.png" alt="" className="w-[580px] h-[580px] object-contain" />
+                </div>
 
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div className="badge-white mx-auto mb-5 w-fit animate-fade-up">
-                        <span className="w-2 h-2 rounded-full bg-[#E80010] inline-block animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-[#FF0000] inline-block animate-pulse" />
                         Palestine's #1 Deals App
                     </div>
 
@@ -156,9 +127,10 @@ function SaviApp({ language }) {
                         {t.intro}
                     </p>
 
-                    {/* Download CTAs — primary action for customers */}
+                    {/* Download CTAs */}
                     <div className="mb-8 animate-fade-up anim-delay-400">
-                        <DownloadButtons dark />
+                        {/* eslint-disable-next-line react-hooks/static-components */}
+                        <DownloadButtons />
                     </div>
 
                     <Link to="/savi-details"
@@ -182,7 +154,7 @@ function SaviApp({ language }) {
             </section>
 
             {/* ── HOW IT WORKS — customer journey ── */}
-            <section className="py-20 bg-[#07080F] relative overflow-hidden">
+            <section className="py-20 bg-[#8B0000] relative overflow-hidden">
                 <div className="blob blob-red w-[400px] h-[400px] -top-16 -left-16 opacity-28 animate-float-blob" />
                 <div className="grid-overlay" />
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -191,10 +163,10 @@ function SaviApp({ language }) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
                         {steps.map((s, i) => (
-                            <div key={i} className={`glass-card p-8 reveal delay-${(i+1)*150} hover:border-[#E80010]/30 transition-colors`}>
+                            <div key={i} className={`glass-card p-8 reveal delay-${(i+1)*150} hover:border-[#FF0000]/30 transition-colors`}>
                                 {/* Step number + icon */}
                                 <div className="flex items-center gap-3 mb-5">
-                                    <div className="w-14 h-14 rounded-2xl bg-[#E80010] flex items-center justify-center text-white flex-shrink-0">
+                                    <div className="w-14 h-14 rounded-2xl text-white flex items-center justify-center flex-shrink-0">
                                         {s.icon}
                                     </div>
                                     <span className="text-white/20 text-5xl font-black leading-none">{s.n}</span>
@@ -208,7 +180,8 @@ function SaviApp({ language }) {
                     {/* Inline download nudge */}
                     <div className="mt-12 text-center reveal">
                         <p className="text-white/40 text-sm mb-6">Ready to start?</p>
-                        <DownloadButtons dark />
+                        {/* eslint-disable-next-line react-hooks/static-components */}
+                        <DownloadButtons />
                     </div>
                 </div>
             </section>
@@ -223,8 +196,8 @@ function SaviApp({ language }) {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {benefits.map((b, i) => (
-                            <div key={i} className={`feature-card p-6 reveal delay-${((i % 4) + 1) * 100} hover:border-[#E80010]/20 transition-colors`}>
-                                <div className="w-10 h-10 rounded-xl bg-[#E80010]/10 flex items-center justify-center mb-4 text-[#E80010]">
+                            <div key={i} className={`feature-card p-6 reveal delay-${((i % 4) + 1) * 100} hover:border-[#FF0000]/20 transition-colors`}>
+                                <div className="w-10 h-10 rounded-xl bg-[#FF0000]/10 flex items-center justify-center mb-4 text-[#FF0000]">
                                     {BENEFIT_ICONS[i]}
                                 </div>
                                 <p className="text-gray-700 text-sm leading-relaxed font-medium">{b}</p>
@@ -243,8 +216,8 @@ function SaviApp({ language }) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {reasons.map((r, i) => (
                             <div key={i} className={`feature-card p-7 text-center reveal delay-${(i+1)*100}`}>
-                                <div className="w-11 h-11 rounded-2xl bg-[#E80010]/10 flex items-center justify-center mx-auto mb-4">
-                                    <span className="text-[#E80010] font-black">{i + 1}</span>
+                                <div className="w-11 h-11 rounded-2xl bg-[#FF0000]/10 flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-[#FF0000] font-black">{i + 1}</span>
                                 </div>
                                 <h4 className="font-bold text-[#07080F] text-sm mb-2">{r.title}</h4>
                                 <p className="text-gray-500 text-xs leading-relaxed">{r.text}</p>
@@ -254,61 +227,10 @@ function SaviApp({ language }) {
                 </div>
             </section>
 
-            {/* ── PARTNER STORES ── */}
-            <section className="py-24 bg-[#f8f8fb]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12 reveal">
-                        <div className="badge-red mx-auto mb-4 w-fit">{t.partnerStores}</div>
-                        <h2 className="text-3xl md:text-4xl font-black text-[#07080F] mb-3">{t.partnerStores}</h2>
-                        <p className="text-gray-500">{t.partnerStoresSubtitle}</p>
-                    </div>
-
-                    {loadingStores ? (
-                        <div className="flex justify-center py-12">
-                            <div className="flex flex-col items-center gap-3">
-                                <div className="w-10 h-10 border-2 border-[#E80010] border-t-transparent rounded-full animate-spin" />
-                                <p className="text-gray-400 text-sm">{t.loadingStores}</p>
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 mb-10">
-                                {stores.slice(0, 5).map((store) => (
-                                    <div key={store.id}
-                                         className="flex flex-col items-center bg-white rounded-2xl p-4 border border-gray-100 hover:border-[#E80010]/20 hover:shadow-card-lg transition-all group">
-                                        <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#E80010]/25 transition-all mb-3">
-                                            <img src={store.logoUrl || '/saviIconBG3.jpg'} alt={store.name}
-                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                 onError={(e) => { e.target.src = '/saviIconBG3.jpg' }} />
-                                        </div>
-                                        <h3 className="font-bold text-[#07080F] text-xs text-center line-clamp-2">{store.name}</h3>
-                                        {store.address && <p className="text-gray-400 text-[0.7rem] mt-1 text-center">{store.address}</p>}
-                                        {store.averageRating > 0 && (
-                                            <div className="flex items-center gap-0.5 mt-1.5">
-                                                <span className="text-yellow-400 text-xs">★</span>
-                                                <span className="text-gray-500 text-xs">{store.formattedRating || store.averageRating.toFixed(1)}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="text-center">
-                                <Link to="/stores" className="btn-primary mx-auto inline-flex">
-                                    {t.viewAllStores}
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </Link>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </section>
-
             {/* ── FINAL CTA ── */}
             <section className="py-20">
                 <div className="max-w-3xl mx-auto px-4">
-                    <div className="relative overflow-hidden rounded-[1.8rem] bg-[#07080F] p-12 text-center reveal">
+                    <div className="relative overflow-hidden rounded-[1.8rem] bg-[#8B0000] p-12 text-center reveal">
                         <div className="blob blob-red w-[350px] h-[350px] -top-20 -right-20 opacity-45 animate-float-blob" />
                         <div className="grid-overlay" />
                         <div className="relative z-10">
@@ -316,7 +238,8 @@ function SaviApp({ language }) {
                             <p className="text-white/55 mb-8 max-w-md mx-auto">{t.learnMoreText}</p>
                             {/* Primary: download buttons */}
                             <div className="mb-6">
-                                <DownloadButtons dark />
+                                {/* eslint-disable-next-line react-hooks/static-components */}
+                                <DownloadButtons />
                             </div>
                             {/* Secondary: learn more link */}
                             <Link to="/savi-details"
