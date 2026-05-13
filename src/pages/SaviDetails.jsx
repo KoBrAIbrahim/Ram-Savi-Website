@@ -22,11 +22,25 @@ function SaviDetails({ language }) {
 
     const toggleFullscreen = () => {
         if (!videoRef.current) return
+        const video = videoRef.current
+
+        // iOS Safari does not support the standard Fullscreen API — use webkit fallback
+        if (!document.fullscreenEnabled && video.webkitSupportsFullscreen) {
+            if (video.webkitDisplayingFullscreen) {
+                video.webkitExitFullscreen()
+                setIsFullscreen(false)
+            } else {
+                video.webkitEnterFullscreen()
+                setIsFullscreen(true)
+            }
+            return
+        }
+
         if (!document.fullscreenElement) {
-            videoRef.current.requestFullscreen()
+            video.requestFullscreen?.()
             setIsFullscreen(true)
         } else {
-            document.exitFullscreen()
+            document.exitFullscreen?.()
             setIsFullscreen(false)
         }
     }
