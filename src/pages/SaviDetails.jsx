@@ -171,7 +171,7 @@ function SaviDetails({ language }) {
                         <div className="relative rounded-2xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.35)] border border-white/10 bg-black">
                             <video
                                 ref={videoRef}
-                                src="/how-to-use.mp4"
+                                src="/savi-use.mov"
                                 className="w-full block"
                                 onPlay={() => setIsPlaying(true)}
                                 onPause={() => setIsPlaying(false)}
