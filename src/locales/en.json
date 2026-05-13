@@ -272,7 +272,9 @@
     "purpose": "Screen Purpose",
     "features": "Features",
     "howToUse": "How to Use",
-    "imageUnavailable": "Image not available"
+    "imageUnavailable": "Image not available",
+    "watchHowItWorks": "Watch How It Works",
+    "watchSubtitle": "See the full Savi experience in action before exploring the screens"
   },
   "stores": {
     "title": "Partner Stores",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { getPageTranslations } from '../locales'
 import { useScrollReveal } from '../hooks/useScrollReveal'
@@ -6,7 +6,30 @@ import { useScrollReveal } from '../hooks/useScrollReveal'
 function SaviDetails({ language }) {
     const [loadedImages,   setLoadedImages]   = useState({})
     const [selectedScreen, setSelectedScreen] = useState(null)
+    const [isPlaying,      setIsPlaying]      = useState(false)
+    const [isFullscreen,   setIsFullscreen]   = useState(false)
+    const videoRef = useRef(null)
     const t = getPageTranslations(language, 'saviDetails')
+
+    const togglePlay = () => {
+        if (!videoRef.current) return
+        if (videoRef.current.paused) {
+            videoRef.current.play()
+        } else {
+            videoRef.current.pause()
+        }
+    }
+
+    const toggleFullscreen = () => {
+        if (!videoRef.current) return
+        if (!document.fullscreenElement) {
+            videoRef.current.requestFullscreen()
+            setIsFullscreen(true)
+        } else {
+            document.exitFullscreen()
+            setIsFullscreen(false)
+        }
+    }
 
     const screens = [
         { file:'login_screen.PNG', ar:'شاشة تسجيل الدخول', en:'Login Screen', purpose_ar:'تسمح للمستخدمين بالدخول إلى حساباتهم الشخصية للوصول إلى العروض الحصرية', purpose_en:'Allows users to log into their personal accounts to access exclusive offers', features_ar:['إدخال البريد الإلكتروني','كلمة مرور آمنة','خيار تذكر معلومات الدخول','استعادة كلمة المرور'], features_en:['Email input','Secure password','Remember login option','Password recovery'], usage_ar:'أدخل بريدك الإلكتروني وكلمة المرور للوصول إلى حسابك', usage_en:'Enter your email and password to access your account' },
@@ -126,6 +149,90 @@ function SaviDetails({ language }) {
                     <p className="text-white/60 max-w-2xl mx-auto">{t.subtitle}</p>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+            </section>
+
+            {/* ── VIDEO SECTION ── */}
+            <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white">
+                <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12 reveal" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                        <span className="inline-block text-[#E80010] text-sm font-bold tracking-widest uppercase mb-3">
+                            {language === 'ar' ? 'فيديو تعريفي' : 'Intro Video'}
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{t.watchHowItWorks}</h2>
+                        <p className="text-gray-500 max-w-xl mx-auto">{t.watchSubtitle}</p>
+                    </div>
+
+                    <div className="reveal relative group">
+                        {/* Animated glow border */}
+                        <div className="absolute -inset-1 rounded-3xl blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-700"
+                             style={{ background: 'linear-gradient(135deg, #E80010, #8B0000, #E80010)' }} />
+
+                        {/* Video wrapper */}
+                        <div className="relative rounded-2xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.35)] border border-white/10 bg-black">
+                            <video
+                                ref={videoRef}
+                                src="/how-to-use.mp4"
+                                className="w-full block"
+                                onPlay={() => setIsPlaying(true)}
+                                onPause={() => setIsPlaying(false)}
+                                onEnded={() => setIsPlaying(false)}
+                                onClick={togglePlay}
+                                playsInline
+                            />
+
+                            {/* Big play button — shown when paused */}
+                            <div
+                                onClick={togglePlay}
+                                className={`absolute inset-0 flex items-center justify-center transition-all duration-300 cursor-pointer
+                                    ${isPlaying ? 'opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto' : 'opacity-100 bg-black/30'}`}
+                            >
+                                <div className={`w-24 h-24 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(232,0,16,0.6)] transition-transform duration-300
+                                    ${isPlaying ? 'scale-90 bg-black/60' : 'scale-100 bg-[#E80010] hover:scale-110'}`}>
+                                    {isPlaying ? (
+                                        <svg className="w-9 h-9 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="w-9 h-9 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Bottom control bar */}
+                            <div className={`absolute bottom-0 left-0 right-0 flex items-center justify-between px-5 py-3
+                                bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300
+                                ${isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'}`}>
+                                <button
+                                    onClick={togglePlay}
+                                    className="text-white/80 hover:text-white transition-colors"
+                                    aria-label={isPlaying ? 'Pause' : 'Play'}
+                                >
+                                    {isPlaying ? (
+                                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={toggleFullscreen}
+                                    className="text-white/80 hover:text-white transition-colors"
+                                    aria-label="Fullscreen"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                            d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section className="py-20">

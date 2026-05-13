@@ -272,7 +272,9 @@
     "purpose": "الهدف من الشاشة",
     "features": "المميزات",
     "howToUse": "كيفية الاستخدام",
-    "imageUnavailable": "صورة غير متوفرة"
+    "imageUnavailable": "صورة غير متوفرة",
+    "watchHowItWorks": "شاهد كيف يعمل التطبيق",
+    "watchSubtitle": "استعرض تجربة Savi كاملةً قبل تصفح الشاشات"
   },
   "stores": {
     "title": "المحلات المشتركة",
