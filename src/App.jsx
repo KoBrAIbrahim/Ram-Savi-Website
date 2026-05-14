@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useVisitorCount } from './hooks/useVisitorCount'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -18,6 +19,7 @@ function ScrollToTop() {
 
 function App() {
   const [language, setLanguage] = useState('ar')
+  const visitorCount = useVisitorCount()
 
   return (
     <div className="app" dir={language === 'ar' ? 'rtl' : 'ltr'}>
